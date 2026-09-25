@@ -26,7 +26,8 @@ export async function runScoreStep(db: SupabaseClient, opts: { hasKey: boolean; 
   const pending = (data ?? []) as Pending[];
   stats.pending = pending.length;
 
-  await mapWithConcurrency(pending, 3, async (p) => {
+  // Concurrency 2: Groq's free tier allows ~8,000 tokens/min, so more parallelism only buys 429s.
+  await mapWithConcurrency(pending, 2, async (p) => {
     if (Date.now() > deadline) {
       stats.stopped_for_time = true;
       return;

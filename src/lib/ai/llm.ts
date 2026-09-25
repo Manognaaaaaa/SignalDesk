@@ -71,6 +71,9 @@ export function clearLlmCache() {
   cache.clear();
 }
 
+/** Groq reasoning models accept reasoning_effort; others would reject it. */
+export const isReasoningModel = (model: string) => /gpt-oss|qwen3|deepseek-r1/i.test(model);
+
 /** sha256 over everything that determines the output; used for caching and auditing. */
 export function promptHash(system: string, user: string, model: string, version: string): string {
   return createHash("sha256").update(`${system}\n${user}\n${model}\n${version}`).digest("hex");
@@ -198,6 +201,9 @@ export async function callJson<T>(
           temperature: 0,
           max_tokens: opts.maxTokens ?? 400,
           response_format: { type: "json_object" },
+          // Reasoning models (gpt-oss) spend completion tokens on hidden reasoning; keep it short
+          // so the small token budgets go to the JSON answer.
+          ...(isReasoningModel(deps.model) ? { reasoning_effort: "low" } : {}),
           messages: [
             { role: "system", content: system },
             { role: "user", content: userMsg },

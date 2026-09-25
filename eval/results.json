@@ -1,0 +1,385 @@
+{
+  "summary": {
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "cases": 30,
+    "accuracy": 1,
+    "per_stance": {
+      "bullish": {
+        "cases": 6,
+        "correct": 6,
+        "accuracy": 1
+      },
+      "bearish": {
+        "cases": 8,
+        "correct": 8,
+        "accuracy": 1
+      },
+      "hawkish": {
+        "cases": 4,
+        "correct": 4,
+        "accuracy": 1
+      },
+      "dovish": {
+        "cases": 3,
+        "correct": 3,
+        "accuracy": 1
+      },
+      "neutral": {
+        "cases": 4,
+        "correct": 4,
+        "accuracy": 1
+      },
+      "unclear": {
+        "cases": 5,
+        "correct": 5,
+        "accuracy": 1
+      }
+    },
+    "unclear_recall": 1,
+    "unclear_precision": 1,
+    "evidence_validity": 1,
+    "failed": 0,
+    "skipped": 0,
+    "avg_latency_ms": 2777,
+    "llm_calls": 51,
+    "schema_retries": 0,
+    "rate_limited_retries": 21,
+    "input_tokens": 13692,
+    "output_tokens": 3152,
+    "est_cost_usd": 0.004418,
+    "run_at": "2026-09-25T08:05:53.641Z"
+  },
+  "rows": [
+    {
+      "id": "c01",
+      "asset": "Gold",
+      "expected": "bullish",
+      "predicted": "bullish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 694,
+      "why": "Gold hits record high, rises 1.8%, and strong central‑bank buying indicate upward pressure."
+    },
+    {
+      "id": "c02",
+      "asset": "Gold",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 642,
+      "why": "Gold slides, fell 1.4%, and stronger dollar makes metal more expensive for overseas buyers."
+    },
+    {
+      "id": "c03",
+      "asset": "Crude oil",
+      "expected": "bullish",
+      "predicted": "bullish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 436,
+      "why": "Oil prices jump and Brent crude rose 3% to six‑week high."
+    },
+    {
+      "id": "c04",
+      "asset": "Crude oil",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 511,
+      "why": "Crude falls, inventories rose, WTI dropped 2.5% indicating downward pressure."
+    },
+    {
+      "id": "c05",
+      "asset": "Bitcoin",
+      "expected": "bullish",
+      "predicted": "bullish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 774,
+      "why": "Bitcoin climbs above its previous peak as fund inflows surge and spot funds took in a record amount."
+    },
+    {
+      "id": "c06",
+      "asset": "Bitcoin",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 979,
+      "why": "Bitcoin tumbles after exchange halts withdrawals and liquidations accelerated the drop."
+    },
+    {
+      "id": "c07",
+      "asset": "NVIDIA",
+      "expected": "bullish",
+      "predicted": "bullish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 498,
+      "why": "Shares surge, outlook raised, data‑centre sales doubled indicating upward pressure."
+    },
+    {
+      "id": "c08",
+      "asset": "NVIDIA",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 525,
+      "why": "Nvidia slides, export curbs cut revenue, shares fell 6%."
+    },
+    {
+      "id": "c09",
+      "asset": "Tesla",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 511,
+      "why": "Deliveries missed expectations and shares fell in after-hours trading."
+    },
+    {
+      "id": "c10",
+      "asset": "S&P 500",
+      "expected": "bullish",
+      "predicted": "bullish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 1659,
+      "why": "Wall Street rallies and S&P 500 closed at a record high, indicating upward pressure."
+    },
+    {
+      "id": "c11",
+      "asset": "Nasdaq",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4558,
+      "why": "Tech stocks sink, Nasdaq fell 2.1%, investors sold growth shares after yields jump"
+    },
+    {
+      "id": "c12",
+      "asset": "EUR/USD",
+      "expected": "bullish",
+      "predicted": "bullish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4631,
+      "why": "The euro rises against the dollar and EUR/USD climbed to a two-month high."
+    },
+    {
+      "id": "c13",
+      "asset": "EUR/USD",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 3648,
+      "why": "EUR/USD dropped below its recent range and the euro weakened against major currencies."
+    },
+    {
+      "id": "c14",
+      "asset": "USD/JPY",
+      "expected": "bearish",
+      "predicted": "bearish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 5244,
+      "why": "Yen surge and USD/JPY fell sharply indicate downward pressure on USD/JPY."
+    },
+    {
+      "id": "c15",
+      "asset": "Federal Reserve",
+      "expected": "hawkish",
+      "predicted": "hawkish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 1560,
+      "why": "Powell says rates may stay higher and inflation remains too high, indicating tighter policy."
+    },
+    {
+      "id": "c16",
+      "asset": "Federal Reserve",
+      "expected": "dovish",
+      "predicted": "dovish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4712,
+      "why": "Cuts rates, cites cooling labour market, and signals further easing may follow."
+    },
+    {
+      "id": "c17",
+      "asset": "Federal Reserve",
+      "expected": "hawkish",
+      "predicted": "hawkish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 2584,
+      "why": "Officials favoured another hike, noted rising inflation risks, and saw little room to ease policy."
+    },
+    {
+      "id": "c18",
+      "asset": "European Central Bank",
+      "expected": "dovish",
+      "predicted": "dovish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4605,
+      "why": "ECB lowers its deposit rate for the third time this year."
+    },
+    {
+      "id": "c19",
+      "asset": "European Central Bank",
+      "expected": "hawkish",
+      "predicted": "hawkish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 3825,
+      "why": "Policymakers push back on early cuts, wage growth too strong, and easing is premature."
+    },
+    {
+      "id": "c20",
+      "asset": "Bank of England",
+      "expected": "dovish",
+      "predicted": "dovish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4642,
+      "why": "S1 says cuts are coming; S3 notes members voted for an immediate cut."
+    },
+    {
+      "id": "c21",
+      "asset": "Bank of England",
+      "expected": "hawkish",
+      "predicted": "hawkish",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 3563,
+      "why": "BoE raises rates and warns more may be needed, not ruling out further increases."
+    },
+    {
+      "id": "c22",
+      "asset": "European Central Bank",
+      "expected": "neutral",
+      "predicted": "neutral",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 5238,
+      "why": "ECB keeps rates unchanged and gave no signal about the next move."
+    },
+    {
+      "id": "c23",
+      "asset": "Gold",
+      "expected": "neutral",
+      "predicted": "neutral",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 1685,
+      "why": "Gold holds steady and bullion traded flat, indicating no directional pressure."
+    },
+    {
+      "id": "c24",
+      "asset": "S&P 500",
+      "expected": "neutral",
+      "predicted": "neutral",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 3016,
+      "why": "S&P 500 finished flat and US stocks ended little changed, indicating no directional pressure."
+    },
+    {
+      "id": "c25",
+      "asset": "EUR/USD",
+      "expected": "neutral",
+      "predicted": "neutral",
+      "status": "ok",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 1596,
+      "why": "Sentences say EUR/USD trades sideways, stays within a narrow band, and shows no clear momentum."
+    },
+    {
+      "id": "c26",
+      "asset": "Apple",
+      "expected": "unclear",
+      "predicted": "unclear",
+      "status": "unclear",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4502,
+      "why": "Apple announced upcoming product event, but no price impact indicated."
+    },
+    {
+      "id": "c27",
+      "asset": "Federal Reserve",
+      "expected": "unclear",
+      "predicted": "unclear",
+      "status": "unclear",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 3593,
+      "why": "Sentences discuss a bank merger approval, not monetary policy direction."
+    },
+    {
+      "id": "c28",
+      "asset": "Crude oil",
+      "expected": "unclear",
+      "predicted": "unclear",
+      "status": "unclear",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4582,
+      "why": "Sentences mention a conference with no indication of price direction for crude oil."
+    },
+    {
+      "id": "c29",
+      "asset": "Bitcoin",
+      "expected": "unclear",
+      "predicted": "unclear",
+      "status": "unclear",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 4594,
+      "why": "Conference draws record crowds, no price direction indicated."
+    },
+    {
+      "id": "c30",
+      "asset": "Gold",
+      "expected": "unclear",
+      "predicted": "unclear",
+      "status": "unclear",
+      "correct": true,
+      "evidence_valid": true,
+      "latency_ms": 3697,
+      "why": "Sentences discuss mixed results and varied output without indicating price direction."
+    }
+  ]
+}
