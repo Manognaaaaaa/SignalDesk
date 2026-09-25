@@ -18,7 +18,8 @@
     "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/run-ingest.ts",
     "eval": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval-stance.ts",
     "gen-secret": "tsx scripts/gen-secret.ts",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "migrate": "tsx --env-file=.env.local scripts/migrate.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
@@ -36,10 +37,12 @@
     "@eslint/eslintrc": "3.3.7",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "22.20.4",
+    "@types/pg": "8.23.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "eslint": "9.39.5",
     "eslint-config-next": "15.5.26",
+    "pg": "8.23.0",
     "postcss": "8.5.28",
     "tailwindcss": "4.3.3",
     "tsx": "4.23.15",

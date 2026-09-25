@@ -12,12 +12,12 @@ import type { Sentence } from "@/lib/ingest/sentences";
  * transient errors) simply wait for the next run. One failure never stops the loop.
  */
 
-export type ScoreStats = { ai_offline: boolean; pending: number; saved: number; ok: number; unclear: number; failed: number; skipped: number; llm_calls: number; stopped_for_time: boolean };
+export type ScoreStats = { ai_offline: boolean; pending: number; saved: number; ok: number; unclear: number; failed: number; skipped: number; skip_reasons: Record<string, number>; llm_calls: number; stopped_for_time: boolean };
 
 type Pending = { article_id: string; asset_id: string; asset_name: string; asset_type: AssetType; sentences: Sentence[] };
 
 export async function runScoreStep(db: SupabaseClient, opts: { hasKey: boolean; maxCalls: number; timeBudgetMs: number; deps?: LlmDeps }): Promise<ScoreStats> {
-  const stats: ScoreStats = { ai_offline: !opts.hasKey, pending: 0, saved: 0, ok: 0, unclear: 0, failed: 0, skipped: 0, llm_calls: 0, stopped_for_time: false };
+  const stats: ScoreStats = { ai_offline: !opts.hasKey, pending: 0, saved: 0, ok: 0, unclear: 0, failed: 0, skipped: 0, skip_reasons: {}, llm_calls: 0, stopped_for_time: false };
   if (!opts.hasKey || opts.maxCalls <= 0) return stats;
   const deadline = Date.now() + opts.timeBudgetMs;
 
@@ -37,6 +37,8 @@ export async function runScoreStep(db: SupabaseClient, opts: { hasKey: boolean; 
       stats.llm_calls += out.calls;
       if (out.kind === "skipped") {
         stats.skipped++;
+        // "cap" also appears when llm_calls cannot be read (the budget check fails closed).
+        stats.skip_reasons[out.reason] = (stats.skip_reasons[out.reason] ?? 0) + 1;
         return;
       }
       const { error: e } = await db.from("asset_signals").upsert({ article_id: p.article_id, asset_id: p.asset_id, ...out.row }, { onConflict: "article_id,asset_id", ignoreDuplicates: true });
