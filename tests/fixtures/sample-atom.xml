@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Central Bank (test fixture)</title>
+  <entry>
+    <title>ECB keeps rates unchanged</title>
+    <link href="https://cb.example.org/press/2026/ecb-decision"/>
+    <updated>2026-09-24T12:15:00Z</updated>
+    <summary>The Governing Council decided to keep the three key interest rates unchanged.</summary>
+  </entry>
+</feed>

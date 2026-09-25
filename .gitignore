@@ -20,12 +20,6 @@ next-env.d.ts
 .idea/
 .vscode/
 
-# licensed third-party data (Kaggle TalkingData) - never commit or redistribute
-data/
-
-# generated evaluation output
-eval/results/
-
 # pre-existing local python venv in this folder
 .venv/
 venv/

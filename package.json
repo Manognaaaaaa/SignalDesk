@@ -1,5 +1,5 @@
 {
-  "name": "linkpulse",
+  "name": "signaldesk",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
@@ -14,39 +14,30 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "seed": "tsx --env-file=.env.local scripts/seed.ts",
-    "simulate": "tsx --env-file=.env.local scripts/simulate.ts",
-    "send-conversion": "tsx --env-file=.env.local scripts/send-conversion.ts",
-    "eval": "tsx --env-file-if-exists=.env.local scripts/eval.ts",
-    "replay": "tsx --env-file-if-exists=.env.local scripts/replay.ts",
-    "loadtest": "tsx --env-file-if-exists=.env.local scripts/loadtest.ts",
-    "security-check": "tsx --env-file=.env.local scripts/security-check.ts",
-    "validate": "tsx --env-file=.env.local scripts/validate.ts",
+    "seed": "tsx --conditions=react-server --env-file=.env.local scripts/seed.ts",
+    "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/run-ingest.ts",
+    "eval": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval-stance.ts",
     "gen-secret": "tsx scripts/gen-secret.ts",
     "check": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.117.1",
-    "csv-parse": "7.0.2",
     "groq-sdk": "1.6.0",
-    "isbot": "5.2.2",
     "next": "15.5.26",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "recharts": "3.10.1",
+    "rss-parser": "3.13.0",
     "server-only": "0.0.1",
-    "ua-parser-js": "2.0.10",
     "zod": "4.6.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.7",
     "@tailwindcss/postcss": "4.3.3",
-    "@types/autocannon": "7.12.7",
     "@types/node": "22.20.4",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "autocannon": "8.0.0",
     "eslint": "9.39.5",
     "eslint-config-next": "15.5.26",
     "postcss": "8.5.28",
@@ -56,7 +47,6 @@
     "vitest": "5.0.1"
   },
   "overrides": {
-    "postcss": "$postcss",
-    "uuid": "11.1.1"
+    "postcss": "$postcss"
   }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Example Markets Wire (test fixture)</title>
+    <link>https://news.example.com</link>
+    <item>
+      <title><![CDATA[Gold climbs to record as investors seek <b>safety</b>]]></title>
+      <link>https://news.example.com/markets/gold-record?utm_source=rss&amp;utm_medium=feed&amp;id=42#top</link>
+      <description><![CDATA[<p>Gold prices rose 1.2% on Tuesday.</p><p>Bullion demand from central banks remains strong &amp; steady.</p>]]></description>
+      <pubDate>Tue, 22 Sep 2026 09:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Fed's Powell signals rates will stay higher for longer</title>
+      <link>https://news.example.com/economy/fed-powell</link>
+      <description>The Federal Reserve chair said inflation remains too high. Markets trimmed bets on cuts.</description>
+      <pubDate>Mon, 21 Sep 2026 15:30:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Old story that should be skipped</title>
+      <link>https://news.example.com/old</link>
+      <description>From weeks ago.</description>
+      <pubDate>Mon, 01 Jun 2026 10:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Script link</title>
+      <link>javascript:alert(1)</link>
+      <description>Bad link.</description>
+      <pubDate>Mon, 21 Sep 2026 10:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

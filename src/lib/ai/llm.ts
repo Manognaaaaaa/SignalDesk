@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import Groq from "groq-sdk";
 import type { z } from "zod";
 import { serverEnv } from "@/lib/env";
-import { LruTtlCache } from "@/lib/redirect/link-cache";
+import { LruTtlCache } from "@/lib/lru";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 /**
@@ -16,12 +16,12 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
  *    recording hashes, token counts and cost - never the key, headers or prompt text.
  */
 
+export type Stage = "stance" | "brief";
+
 export type CallStatus = "ok" | "schema_retry" | "failed" | "timeout" | "rate_limited";
 
 export type LlmCallRecord = {
-  alert_id: string | null;
-  stage: string;
-  provider: "groq";
+  stage: Stage;
   model: string;
   prompt_hash: string;
   prompt_version: string;
@@ -153,11 +153,11 @@ export function getDefaultDeps(): LlmDeps {
  * Never throws: returns ok:false so callers can always fall back to a template.
  */
 export async function callJson<T>(
-  stage: string,
+  stage: Stage,
   system: string,
   user: string,
   schema: z.ZodType<T>,
-  opts: { maxTokens?: number; alertId?: string | null; deps?: LlmDeps } = {},
+  opts: { maxTokens?: number; deps?: LlmDeps } = {},
 ): Promise<LlmResult<T>> {
   const deps = opts.deps ?? getDefaultDeps();
   if (!deps.client) return { ok: false, reason: "no_key", calls: 0 };
@@ -185,9 +185,7 @@ export async function callJson<T>(
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), deps.timeoutMs);
     const base = {
-      alert_id: opts.alertId ?? null,
       stage,
-      provider: "groq" as const,
       model: deps.model,
       prompt_hash: hash,
       prompt_version: deps.promptVersion,

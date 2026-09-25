@@ -1,30 +1,5 @@
-import type { LinkWindowStats } from "@/lib/detection/types";
 import type { ChatClient, LlmCallRecord, LlmDeps } from "@/lib/ai/llm";
 
-/** A quiet, healthy link: nothing should fire on this. Override fields per test. */
-export function makeStats(over: Partial<LinkWindowStats> = {}): LinkWindowStats {
-  return {
-    link_id: "11111111-1111-4111-8111-111111111111",
-    as_of: new Date("2026-09-01T12:07:00Z"),
-    target_countries: ["NG"],
-    last10m: { clicks: 5, top_ip_clicks: 1 },
-    last60m: {
-      clicks: 30,
-      bot_clicks: 1,
-      unknown_bot_clicks: 0,
-      off_target_clicks: 2,
-      unknown_country_clicks: 0,
-      top_off_target_countries: [{ country_code: "US", clicks: 2 }],
-    },
-    last24h: { clicks: 700, signups: 35 },
-    baseline7d_signup_rate: 0.05,
-    current_hour_clicks: 30,
-    hourly_history: Array.from({ length: 168 }, (_, i) => 25 + (i % 10)),
-    ...over,
-  };
-}
-
-/** Fake Groq client that returns queued responses or throws queued errors, recording each request. */
 export function fakeClient(queue: (string | Error | { status: number; headers?: Record<string, string> })[]) {
   const requests: Record<string, unknown>[] = [];
   const client: ChatClient = {

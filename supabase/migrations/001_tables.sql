@@ -1,108 +1,128 @@
--- LinkPulse 001: core tables.
--- Every table lives in schema public and gets RLS enabled in 003_rls.sql (deny by default).
--- Raw IPs and full user-agent strings are never stored: only salted hashes and coarse families.
+-- SignalDesk 001: tables, indexes and server-only helper functions.
+-- RLS is enabled on every table in 002_rls.sql. Only titles, short excerpts and a few relevant
+-- sentences are stored - never full articles.
 
 create extension if not exists pgcrypto;
 
-create table if not exists public.affiliates (
+create table if not exists public.sources (
   id uuid primary key default gen_random_uuid(),
-  name text not null check (length(name) between 2 and 80),
-  country_code char(2) not null,
-  tier text check (tier in ('gold', 'silver', 'bronze')),
-  created_at timestamptz not null default now()
-);
-
-create table if not exists public.profiles (
-  user_id uuid primary key references auth.users (id) on delete cascade,
-  role text not null check (role in ('admin', 'affiliate')),
-  affiliate_id uuid null references public.affiliates (id) on delete set null
-);
-
-create table if not exists public.links (
-  id uuid primary key default gen_random_uuid(),
-  slug text unique not null check (slug ~ '^[a-z0-9-]{3,40}$'),
-  affiliate_id uuid not null references public.affiliates (id) on delete cascade,
-  campaign_name text not null check (length(campaign_name) between 2 and 80),
-  destination_url text not null check (destination_url like 'https://%'),
-  target_countries char(2)[] not null,
-  purpose text not null default 'campaign' check (purpose in ('campaign', 'replay', 'loadtest')),
+  name text not null,
+  feed_url text not null unique check (feed_url like 'https://%'),
+  site_domain text not null,
+  kind text not null check (kind in ('central_bank', 'news', 'markets')),
   is_active boolean not null default true,
-  created_at timestamptz not null default now()
+  etag text null,
+  last_modified text null,
+  last_fetched_at timestamptz null,
+  last_status text null,
+  consecutive_failures int not null default 0
 );
-create index if not exists links_affiliate_idx on public.links (affiliate_id);
 
-create table if not exists public.click_events (
+create table if not exists public.assets (
   id uuid primary key default gen_random_uuid(),
-  link_id uuid not null references public.links (id) on delete cascade,
-  clicked_at timestamptz not null default now(),
-  ip_hash text not null,
-  country_code char(2) null,
-  ua_family text not null,
-  device_type text check (device_type in ('desktop', 'mobile', 'tablet', 'bot', 'unknown')),
-  is_bot boolean null, -- NULL = unknown (e.g. replay data has no user agent)
-  referrer_domain text null check (length(referrer_domain) <= 100),
-  dataset text not null check (dataset in ('live', 'simulated', 'replay')),
-  scenario text null
+  slug text not null unique check (slug ~ '^[a-z0-9-]{2,30}$'),
+  name text not null,
+  asset_type text not null check (asset_type in ('currency_pair', 'commodity', 'index', 'stock', 'crypto', 'central_bank')),
+  description_simple text not null
 );
-create index if not exists click_events_link_time_idx on public.click_events (link_id, clicked_at desc);
-create index if not exists click_events_time_idx on public.click_events (clicked_at);
-create index if not exists click_events_link_ip_time_idx on public.click_events (link_id, ip_hash, clicked_at);
 
-create table if not exists public.conversions (
+create table if not exists public.asset_aliases (
+  asset_id uuid not null references public.assets (id) on delete cascade,
+  alias text not null check (length(alias) between 1 and 60),
+  is_case_sensitive boolean not null default false,
+  primary key (asset_id, alias)
+);
+
+create table if not exists public.stories (
   id uuid primary key default gen_random_uuid(),
-  event_id text unique not null,
-  click_id uuid not null references public.click_events (id) on delete cascade,
-  link_id uuid not null references public.links (id) on delete cascade,
-  type text not null check (type in ('signup', 'ftd')),
-  amount_usd numeric(12, 2) null check (amount_usd >= 0),
-  occurred_at timestamptz not null,
-  received_at timestamptz not null default now()
+  headline text not null,
+  first_seen_at timestamptz not null,
+  last_seen_at timestamptz not null,
+  article_count int not null default 1,
+  source_count int not null default 1
 );
-create index if not exists conversions_link_time_idx on public.conversions (link_id, occurred_at);
-create index if not exists conversions_click_idx on public.conversions (click_id);
+create index if not exists stories_last_seen_idx on public.stories (last_seen_at desc);
 
-create table if not exists public.link_stats_hourly (
-  link_id uuid not null references public.links (id) on delete cascade,
-  hour timestamptz not null,
-  clicks int not null default 0,
-  unique_ips int not null default 0,
-  bot_clicks int not null default 0,
-  unknown_bot_clicks int not null default 0,
-  off_target_clicks int not null default 0,
-  unknown_country_clicks int not null default 0,
-  signups int not null default 0,
-  ftds int not null default 0,
-  deposits_usd numeric(12, 2) not null default 0,
-  primary key (link_id, hour)
-);
-
-create table if not exists public.alerts (
+create table if not exists public.articles (
   id uuid primary key default gen_random_uuid(),
-  link_id uuid not null references public.links (id) on delete cascade,
-  rule_code text not null check (rule_code in ('IP_BURST', 'BOT_SHARE', 'NO_CONVERSIONS', 'GEO_MISMATCH', 'CLICK_SPIKE')),
-  severity text not null check (severity in ('low', 'medium', 'high')),
-  window_start timestamptz not null,
-  window_end timestamptz not null,
-  evidence jsonb not null,
-  status text not null default 'open' check (status in ('open', 'acknowledged', 'resolved')),
-  -- Human feedback loop: set by an admin on Resolve. Future training labels.
-  resolution text null check (resolution in ('confirmed_fraud', 'false_alarm', 'inconclusive')),
-  ai_status text not null default 'pending' check (ai_status in ('pending', 'done', 'template', 'failed')),
-  ai_summary text null,
-  ai_likely_cause text null check (ai_likely_cause in ('bot_traffic', 'click_farm', 'misconfigured_targeting', 'organic_spike', 'tracking_issue', 'unknown')),
-  ai_recommended_action text null check (ai_recommended_action in ('monitor', 'contact_affiliate', 'pause_link', 'investigate_manually')),
-  ai_explanation text null,
+  source_id uuid not null references public.sources (id) on delete cascade,
+  url text not null unique check (url ~ '^https?://'),
+  url_hash text not null unique,
+  title text not null check (length(title) <= 500),
+  excerpt text not null default '' check (length(excerpt) <= 500),
+  published_at timestamptz null,
+  fetched_at timestamptz not null default now(),
+  story_id uuid null references public.stories (id) on delete set null,
+  language text not null default 'en'
+);
+create index if not exists articles_published_idx on public.articles (published_at desc);
+create index if not exists articles_story_idx on public.articles (story_id);
+create index if not exists articles_fetched_idx on public.articles (fetched_at desc);
+
+-- sentences = [{ "id": "S1", "text": "..." }]: mentioning sentences + one neighbour each side, max 6.
+create table if not exists public.asset_mentions (
+  article_id uuid not null references public.articles (id) on delete cascade,
+  asset_id uuid not null references public.assets (id) on delete cascade,
+  sentences jsonb not null check (jsonb_typeof(sentences) = 'array' and jsonb_array_length(sentences) between 1 and 6),
+  primary key (article_id, asset_id)
+);
+create index if not exists asset_mentions_asset_idx on public.asset_mentions (asset_id);
+
+create table if not exists public.asset_signals (
+  article_id uuid not null references public.articles (id) on delete cascade,
+  asset_id uuid not null references public.assets (id) on delete cascade,
+  stance text not null check (stance in ('bullish', 'bearish', 'hawkish', 'dovish', 'neutral', 'unclear')),
+  strength smallint not null check (strength between 0 and 3),
+  evidence_ids text[] not null,
+  why text not null default '' check (length(why) <= 200),
+  status text not null check (status in ('ok', 'unclear', 'failed')),
+  model text not null,
+  prompt_version text not null,
   created_at timestamptz not null default now(),
-  unique (link_id, rule_code, window_start)
+  primary key (article_id, asset_id),
+  foreign key (article_id, asset_id) references public.asset_mentions (article_id, asset_id) on delete cascade
 );
-create index if not exists alerts_created_idx on public.alerts (created_at desc);
+create index if not exists asset_signals_asset_idx on public.asset_signals (asset_id, created_at desc);
+
+create table if not exists public.daily_mood (
+  asset_id uuid not null references public.assets (id) on delete cascade,
+  day date not null,
+  score numeric(5, 3) not null check (score between -1 and 1),
+  confidence text not null check (confidence in ('low', 'medium', 'high')),
+  article_count int not null,
+  source_count int not null,
+  agreement numeric(4, 3) not null,
+  primary key (asset_id, day)
+);
+
+create table if not exists public.watchlists (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  asset_id uuid not null references public.assets (id) on delete cascade,
+  added_at timestamptz not null default now(),
+  primary key (user_id, asset_id)
+);
+
+create table if not exists public.user_settings (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  beginner_mode boolean not null default false
+);
+
+-- bullets = [{ "text": "...", "asset_slugs": [], "article_ids": [] }]
+create table if not exists public.briefs (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  day date not null,
+  level text not null check (level in ('standard', 'beginner')),
+  watchlist_hash text not null,
+  bullets jsonb not null,
+  source text not null default 'ai' check (source in ('ai', 'template')),
+  created_at timestamptz not null default now(),
+  primary key (user_id, day, level, watchlist_hash)
+);
 
 create table if not exists public.llm_calls (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
-  alert_id uuid null references public.alerts (id) on delete set null,
-  stage text not null,
-  provider text not null,
+  stage text not null check (stage in ('stance', 'brief')),
   model text not null,
   prompt_hash text not null,
   prompt_version text not null,
@@ -118,22 +138,54 @@ create index if not exists llm_calls_created_idx on public.llm_calls (created_at
 
 create table if not exists public.job_runs (
   id uuid primary key default gen_random_uuid(),
-  job text not null check (job in ('rollup', 'detect', 'explain', 'simulate', 'replay')),
+  job text not null check (job in ('ingest', 'score', 'mood')),
   started_at timestamptz not null default now(),
   finished_at timestamptz null,
   status text not null check (status in ('ok', 'partial', 'failed')),
   stats jsonb not null default '{}'::jsonb
 );
-create index if not exists job_runs_started_idx on public.job_runs (started_at desc);
 
-create table if not exists public.eval_runs (
-  id uuid primary key default gen_random_uuid(),
-  created_at timestamptz not null default now(),
-  kind text not null check (kind in ('randomised', 'false_alarm', 'sensitivity', 'held_out', 'replay', 'load_test', 'security')),
-  git_sha text null,
-  config_hash text not null,
-  seed int null,
-  summary jsonb not null,
-  details jsonb not null
-);
-create index if not exists eval_runs_kind_created_idx on public.eval_runs (kind, created_at desc);
+-- Mentions that still need a stance, newest articles first (server-only).
+create or replace function public.pending_signal_pairs(p_limit int)
+returns table (article_id uuid, asset_id uuid, asset_name text, asset_type text, sentences jsonb)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select m.article_id, m.asset_id, a.name, a.asset_type, m.sentences
+  from public.asset_mentions m
+  join public.assets a on a.id = m.asset_id
+  join public.articles ar on ar.id = m.article_id
+  where not exists (select 1 from public.asset_signals s where s.article_id = m.article_id and s.asset_id = m.asset_id)
+    and coalesce(ar.published_at, ar.fetched_at) > now() - interval '7 days'
+  order by coalesce(ar.published_at, ar.fetched_at) desc
+  limit greatest(0, least(p_limit, 500));
+$$;
+
+-- Recomputes counts and time range for the given stories from their articles (server-only).
+create or replace function public.refresh_stories(p_ids uuid[])
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update public.stories s
+  set article_count = x.n,
+      source_count = x.sources,
+      first_seen_at = x.first_seen,
+      last_seen_at = x.last_seen
+  from (
+    select story_id, count(*)::int as n, count(distinct source_id)::int as sources,
+           min(coalesce(published_at, fetched_at)) as first_seen, max(coalesce(published_at, fetched_at)) as last_seen
+    from public.articles
+    where story_id = any (p_ids)
+    group by story_id
+  ) x
+  where s.id = x.story_id;
+$$;
+
+revoke execute on function public.pending_signal_pairs(int) from public, anon, authenticated;
+revoke execute on function public.refresh_stories(uuid[]) from public, anon, authenticated;
+grant execute on function public.pending_signal_pairs(int) to service_role;
+grant execute on function public.refresh_stories(uuid[]) to service_role;
