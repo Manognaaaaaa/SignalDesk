@@ -1,0 +1,32 @@
+# dependencies / build output
+node_modules/
+.next/
+.vercel/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+
+# secrets - never commit
+.env
+.env.local
+.env.*.local
+.env.*
+!.env.example
+
+# logs / OS / editor
+*.log
+.DS_Store
+.claude/settings.local.json
+.idea/
+.vscode/
+
+# licensed third-party data (Kaggle TalkingData) - never commit or redistribute
+data/
+
+# generated evaluation output
+eval/results/
+
+# pre-existing local python venv in this folder
+.venv/
+venv/
+__pycache__/
