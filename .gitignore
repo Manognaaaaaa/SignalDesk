@@ -24,3 +24,5 @@ next-env.d.ts
 .venv/
 venv/
 __pycache__/
+
+.vercel/

@@ -13,7 +13,7 @@ Tap any citation to see the exact sentences it came from, highlighted, with a li
 
 **Who it helps:** finance students, new retail investors, and busy people who want a 60-second read of what moved their assets and why.
 
-**Live demo:** `https://<your-app>.vercel.app` (placeholder) · **Screenshots / gif:** _(placeholder)_
+**Live demo:** https://signaldesk-inky.vercel.app · **Screenshots / gif:** _(placeholder)_
 
 > Market information only. Not financial advice. Headlines belong to their publishers.
 
@@ -140,7 +140,7 @@ Per stance: bullish 6/6, bearish 8/8, hawkish 4/4, dovish 3/3, neutral 4/4, uncl
 | OilPrice.com | markets |
 | BBC Business | news |
 
-Rejected at verification: *MarketWatch MarketPulse* (last item over a year old) and *Fed monetary-policy-only feed* (nothing in the last 7 days; covered by the all-releases feed). A live dry run fetched all 10 feeds: 159 recent articles, 60 with at least one asset mention.
+In production, **FXStreet answers HTTP 403 to requests from Vercel's datacenter IPs** (it works from a home connection). The job counts the failure and keeps going; after 5 consecutive failures the source is deactivated automatically and logged. Rejected at verification: *MarketWatch MarketPulse* (last item over a year old) and *Fed monetary-policy-only feed* (nothing in the last 7 days; covered by the all-releases feed). A live dry run fetched all 10 feeds: 159 recent articles, 60 with at least one asset mention.
 
 ## 7. Run, test, eval
 
