@@ -19,7 +19,8 @@
     "eval": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval-stance.ts",
     "gen-secret": "tsx scripts/gen-secret.ts",
     "check": "npm run typecheck && npm run lint && npm run test",
-    "migrate": "tsx --env-file=.env.local scripts/migrate.ts"
+    "migrate": "tsx --env-file=.env.local scripts/migrate.ts",
+    "cron": "tsx --env-file=.env.local scripts/cron.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

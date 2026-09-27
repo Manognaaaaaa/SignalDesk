@@ -9,53 +9,16 @@
  * The destructive supabase/reset_linkpulse.sql is deliberately NOT run by this script.
  */
 import { readFileSync } from "node:fs";
-import pg from "pg";
-import { parseArgs, requireEnv } from "./lib/env";
+import { connectDb } from "./lib/db";
+import { parseArgs } from "./lib/env";
 
 const FILES = ["001_tables.sql", "002_rls.sql", "003_seed_assets.sql"];
 
-/** Host only, for messages - never the user, password or full URL. */
-function hostOf(url: string): string {
-  try {
-    return new URL(url).hostname;
-  } catch {
-    return "(unparseable DATABASE_URL)";
-  }
-}
-
 async function main() {
-  const { DATABASE_URL } = requireEnv("DATABASE_URL");
   const args = parseArgs();
   const files = args["with-cron"] ? [...FILES, "004_cron.sql"] : FILES;
 
-  let url: URL;
-  try {
-    url = new URL(DATABASE_URL!);
-  } catch {
-    console.error("DATABASE_URL is not a valid postgres:// connection string.");
-    process.exit(1);
-  }
-  if (url.password.includes("[") || url.password.toUpperCase().includes("YOUR-PASSWORD")) {
-    console.error("DATABASE_URL still contains the [YOUR-PASSWORD] placeholder. Replace it with your database password.");
-    process.exit(1);
-  }
-  // Supabase requires TLS. sslmode in the URL would override our ssl options, so drop it.
-  url.searchParams.delete("sslmode");
-  const client = new pg.Client({ connectionString: url.toString(), ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 15_000 });
-
-  try {
-    await client.connect();
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "";
-    console.error(`Could not connect to ${hostOf(DATABASE_URL!)}.`);
-    if (/password authentication failed/i.test(msg)) console.error("-> Wrong database password. Reset it in Supabase: Project Settings -> Database -> Reset database password.");
-    else if (/ENOTFOUND|getaddrinfo/i.test(msg)) console.error("-> Host not found. Use the 'Session pooler' string from the Connect button (the direct db.* host needs IPv6).");
-    else if (/tenant|user not found/i.test(msg)) console.error("-> Check the user part: the pooler user looks like postgres.<project-ref>.");
-    else console.error(`-> ${msg.slice(0, 160)}`);
-    process.exit(1);
-  }
-
-  console.log(`Connected to ${hostOf(DATABASE_URL!)}`);
+  const client = await connectDb();
   for (const f of files) {
     const sql = readFileSync(`supabase/migrations/${f}`, "utf8");
     try {
