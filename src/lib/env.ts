@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { DEFAULT_STANCE_PROMPT_VERSION, STANCE_PROMPTS } from "@/lib/ai/stance-prompts";
 
 /**
  * Server environment schema, validated once (and at boot via instrumentation.ts) so a
@@ -25,6 +26,8 @@ export const serverEnvSchema = z.object({
   MAX_LLM_CALLS_PER_DAY: z.coerce.number().int().nonnegative().default(400),
   MAX_STANCE_CALLS_PER_RUN: z.coerce.number().int().nonnegative().default(60),
   PROMPT_VERSION: z.string().default("v1"),
+  /** Stance (Judge) prompt version from src/lib/ai/stance-prompts; unknown versions fail at boot. */
+  STANCE_PROMPT_VERSION: z.enum(Object.keys(STANCE_PROMPTS) as [string, ...string[]]).default(DEFAULT_STANCE_PROMPT_VERSION),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

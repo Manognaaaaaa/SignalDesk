@@ -3,7 +3,8 @@ import { z } from "zod";
 import type { AssetType } from "@/config/assets-seed";
 import type { Sentence } from "@/lib/ingest/sentences";
 import { callJson, getDefaultDeps, type LlmDeps } from "./llm";
-import { allowedStances, buildStanceSystemPrompt, buildStanceUserPrompt, type Stance } from "./prompts";
+import { allowedStances, type Stance } from "./prompts";
+import { activeStancePrompt, type StancePrompt } from "./stance-prompts";
 
 /**
  * Stance scoring for ONE (article, asset) pair = ONE model call (plus at most one schema retry).
@@ -49,14 +50,15 @@ export type SignalRow = {
 /** Either a row to save, or "skipped" (no key / cap / network): the pair is retried on a later run. */
 export type StanceOutcome = { kind: "saved"; row: SignalRow; calls: number } | { kind: "skipped"; reason: string; calls: number };
 
-export async function scoreStance(input: StanceInput, deps?: LlmDeps): Promise<StanceOutcome> {
-  const d = deps ?? getDefaultDeps();
+/** `prompt` defaults to the version selected by STANCE_PROMPT_VERSION; its version is recorded on the row and in llm_calls. */
+export async function scoreStance(input: StanceInput, deps?: LlmDeps, prompt: StancePrompt = activeStancePrompt()): Promise<StanceOutcome> {
+  const d = { ...(deps ?? getDefaultDeps()), promptVersion: prompt.version };
   const ids = input.sentences.map((s) => s.id);
-  const res = await callJson("stance", buildStanceSystemPrompt(input.asset.asset_type), buildStanceUserPrompt(input.asset, input.sentences), stanceSchema(input.asset.asset_type, ids), {
+  const res = await callJson("stance", prompt.system(input.asset.asset_type), prompt.user(input.asset, input.sentences), stanceSchema(input.asset.asset_type, ids), {
     maxTokens: 250,
     deps: d,
   });
-  const meta = { model: d.model, prompt_version: d.promptVersion };
+  const meta = { model: d.model, prompt_version: prompt.version };
   if (res.ok) {
     const evidence = [...new Set(res.data.evidence_ids)];
     return {

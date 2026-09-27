@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { clearLlmCache } from "@/lib/ai/llm";
-import { buildStanceSystemPrompt, buildStanceUserPrompt } from "@/lib/ai/prompts";
+import { stanceV1 } from "@/lib/ai/stance-prompts/v1";
+
+const buildStanceSystemPrompt = stanceV1.system;
+const buildStanceUserPrompt = stanceV1.user;
 import { scoreStance } from "@/lib/ai/stance";
 import { buildSentences } from "@/lib/ingest/sentences";
 import { fakeClient, fakeDeps } from "./fixtures/helpers";
