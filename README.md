@@ -96,7 +96,18 @@ The Judge is evaluated on real stored (sentences, asset) pairs labelled by hand,
 
 Stance prompts are versioned in `src/lib/ai/stance-prompts/` (`STANCE_PROMPT_VERSION`, default `v1`). Each result records the version and a hash of the template, and a test freezes v1's text.
 
-_Results: pending hand labelling._
+**Results** (`eval/results/20260927-163616_openai-gpt-oss-120b_v1.md`): 91 real (sentences, asset) pairs. These are all the mentions stored on 2026-09-27; 38% are harder cases. Labels are **AI-made by Claude Opus 5.5**, a different model family from the Judge, and haven't yet been reviewed by the author; see `eval/judge/PROVENANCE.md`.
+
+| Model / prompt | n | Accuracy | Macro F1 | Citation validity | Citation support (strict) | Cited vs gold IDs P / R |
+|---|---:|---:|---:|---:|---:|---:|
+| gpt-oss-120b / v1 | 91 | 73.6% | 79.7% | 100% | 73.9% of 88 cited sentences | 87.5% / 90.3% (n=42) |
+
+- **Directional recall is perfect.** All 8 bullish and 16 bearish gold items were caught.
+- **The main failure is over-reading.** 19 of 49 `unclear` items got a direction. Examples: supply news on oil ("Nigeria output hits six-year high" → bearish) and adjacent news ("hidden costs of holding bitcoin" → bearish). OilPrice.com items score 25%.
+- **The second failure is under-reading "market bets".** 3 of 13 hawkish items ("amid Fed hiking bets") were answered `unclear`, because the model doesn't treat market pricing as a Fed signal. The labelling guide does.
+- **Citations:** none were judged "does not support"; 23 of 88 were "partial".
+- **Macro F1 is flattered** by a `dovish` class with a single example.
+- **Cost:** about $0.014 for 87 Judge calls.
 
 ### 5.2 Synthetic smoke test
 

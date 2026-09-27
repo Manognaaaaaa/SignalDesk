@@ -6,7 +6,9 @@ import type { Sentence } from "@/lib/ingest/sentences";
  * The hand-labelled Judge dataset: eval/judge/labels.csv. The CSV is the frozen source of truth -
  * the eval reads sentences from it, not from the database, so results stay reproducible even
  * after the database changes. The first seven columns are the labelling template; the rest is
- * context for the labeller and for slicing results.
+ * context for the labeller and for slicing results. `labelled_by` records who set each gold
+ * label (e.g. "author", "claude-opus-5.5", "claude-opus-5.5+author-reviewed") so reports can
+ * state label provenance honestly.
  */
 
 export const JUDGE_COLUMNS = [
@@ -23,6 +25,7 @@ export const JUDGE_COLUMNS = [
   "published_at",
   "bucket",
   "url",
+  "labelled_by",
 ] as const;
 
 export const ASSET_TYPES = ["currency_pair", "commodity", "index", "stock", "crypto", "central_bank"] as const;
@@ -60,6 +63,7 @@ export type LabelledExample = {
   sentences: Sentence[];
   gold_stance: string;
   gold_ids: string[];
+  labelled_by: string;
 };
 
 /**
@@ -106,7 +110,7 @@ export function readLabelled(rows: Record<string, string>[]) {
     const bad = goldIds.filter((g) => !valid.has(g));
     if (bad.length) problems.push(`${id}: gold_supporting_sentence_ids ${bad.join(", ")} not in the sentences`);
     if (gold !== "unclear" && goldIds.length === 0) problems.push(`${id}: a ${gold} label needs at least one gold_supporting_sentence_id`);
-    labelled.push({ example_id: id, asset: r.asset ?? "", asset_type: type, article_id: r.article_id ?? "", source: r.source ?? "", bucket: r.bucket ?? "", sentences, gold_stance: gold, gold_ids: goldIds });
+    labelled.push({ example_id: id, asset: r.asset ?? "", asset_type: type, article_id: r.article_id ?? "", source: r.source ?? "", bucket: r.bucket ?? "", sentences, gold_stance: gold, gold_ids: goldIds, labelled_by: (r.labelled_by ?? "").trim() || "unknown" });
   }
   return { labelled, unlabelled, skipped, problems };
 }

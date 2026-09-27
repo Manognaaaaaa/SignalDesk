@@ -1,0 +1,2924 @@
+{
+  "summary": {
+    "run_at": "2026-09-27T16:36:16.436Z",
+    "git": "a8aa432-dirty",
+    "labels_file": "eval/judge/labels.csv",
+    "labelled_by": {
+      "claude-opus-5.5": 91
+    },
+    "dataset_fingerprint": "a0a9deb3eb2a",
+    "examples": 91,
+    "unlabelled_rows": 0,
+    "skipped_rows": 0,
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v1",
+    "prompt_template_hash": "3adf9d693f86",
+    "accuracy": 0.7362637362637363,
+    "macro_f1": 0.7973024917469361,
+    "macro_f1_classes": [
+      "bullish",
+      "bearish",
+      "hawkish",
+      "dovish",
+      "neutral",
+      "unclear"
+    ],
+    "per_class": {
+      "bullish": {
+        "support": 8,
+        "predicted": 18,
+        "tp": 8,
+        "precision": 0.4444444444444444,
+        "recall": 1,
+        "f1": 0.6153846153846153
+      },
+      "bearish": {
+        "support": 16,
+        "predicted": 26,
+        "tp": 16,
+        "precision": 0.6153846153846154,
+        "recall": 1,
+        "f1": 0.761904761904762
+      },
+      "hawkish": {
+        "support": 13,
+        "predicted": 11,
+        "tp": 10,
+        "precision": 0.9090909090909091,
+        "recall": 0.7692307692307693,
+        "f1": 0.8333333333333333
+      },
+      "dovish": {
+        "support": 1,
+        "predicted": 1,
+        "tp": 1,
+        "precision": 1,
+        "recall": 1,
+        "f1": 1
+      },
+      "neutral": {
+        "support": 4,
+        "predicted": 3,
+        "tp": 3,
+        "precision": 1,
+        "recall": 0.75,
+        "f1": 0.8571428571428571
+      },
+      "unclear": {
+        "support": 49,
+        "predicted": 32,
+        "tp": 29,
+        "precision": 0.90625,
+        "recall": 0.5918367346938775,
+        "f1": 0.7160493827160493
+      }
+    },
+    "confusion": {
+      "labels_gold": [
+        "bullish",
+        "bearish",
+        "hawkish",
+        "dovish",
+        "neutral",
+        "unclear"
+      ],
+      "labels_pred": [
+        "bullish",
+        "bearish",
+        "hawkish",
+        "dovish",
+        "neutral",
+        "unclear"
+      ],
+      "matrix": {
+        "bullish": {
+          "bullish": 8,
+          "bearish": 0,
+          "hawkish": 0,
+          "dovish": 0,
+          "neutral": 0,
+          "unclear": 0
+        },
+        "bearish": {
+          "bullish": 0,
+          "bearish": 16,
+          "hawkish": 0,
+          "dovish": 0,
+          "neutral": 0,
+          "unclear": 0
+        },
+        "hawkish": {
+          "bullish": 0,
+          "bearish": 0,
+          "hawkish": 10,
+          "dovish": 0,
+          "neutral": 0,
+          "unclear": 3
+        },
+        "dovish": {
+          "bullish": 0,
+          "bearish": 0,
+          "hawkish": 0,
+          "dovish": 1,
+          "neutral": 0,
+          "unclear": 0
+        },
+        "neutral": {
+          "bullish": 0,
+          "bearish": 1,
+          "hawkish": 0,
+          "dovish": 0,
+          "neutral": 3,
+          "unclear": 0
+        },
+        "unclear": {
+          "bullish": 10,
+          "bearish": 9,
+          "hawkish": 1,
+          "dovish": 0,
+          "neutral": 0,
+          "unclear": 29
+        }
+      }
+    },
+    "by_asset_type": {
+      "crypto": {
+        "n": 16,
+        "correct": 11,
+        "accuracy": 0.6875
+      },
+      "stock": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1
+      },
+      "index": {
+        "n": 6,
+        "correct": 3,
+        "accuracy": 0.5
+      },
+      "currency_pair": {
+        "n": 13,
+        "correct": 10,
+        "accuracy": 0.7692307692307693
+      },
+      "central_bank": {
+        "n": 28,
+        "correct": 24,
+        "accuracy": 0.8571428571428571
+      },
+      "commodity": {
+        "n": 26,
+        "correct": 17,
+        "accuracy": 0.6538461538461539
+      }
+    },
+    "by_bucket": {
+      "not_in_title": {
+        "n": 30,
+        "correct": 21,
+        "accuracy": 0.7
+      },
+      "multi_asset": {
+        "n": 5,
+        "correct": 4,
+        "accuracy": 0.8
+      },
+      "standard": {
+        "n": 56,
+        "correct": 42,
+        "accuracy": 0.75
+      }
+    },
+    "by_source": {
+      "CoinDesk": {
+        "n": 20,
+        "correct": 15,
+        "accuracy": 0.75
+      },
+      "BBC Business": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1
+      },
+      "FXStreet": {
+        "n": 34,
+        "correct": 28,
+        "accuracy": 0.8235294117647058
+      },
+      "CNBC Economy": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1
+      },
+      "Bank of England": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1
+      },
+      "MarketWatch Top Stories": {
+        "n": 7,
+        "correct": 3,
+        "accuracy": 0.42857142857142855
+      },
+      "OilPrice.com": {
+        "n": 12,
+        "correct": 3,
+        "accuracy": 0.25
+      },
+      "European Central Bank": {
+        "n": 5,
+        "correct": 5,
+        "accuracy": 1
+      },
+      "Federal Reserve": {
+        "n": 6,
+        "correct": 6,
+        "accuracy": 1
+      },
+      "CNBC Finance": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1
+      }
+    },
+    "validation_failed": 0,
+    "skipped_calls": 0,
+    "citation_validity": {
+      "n": 91,
+      "rate": 1
+    },
+    "first_attempt_schema_pass": {
+      "n": 91,
+      "rate": 0.989010989010989
+    },
+    "gold_evidence_overlap": {
+      "n": 42,
+      "precision": 0.875,
+      "recall": 0.9032258064516129
+    },
+    "citation_support": {
+      "judge_model": "qwen/qwen3.8-27b",
+      "judge_version": "cj-v1",
+      "judge_prompt_hash": "c4ae327fb768",
+      "examples_judged": 58,
+      "judge_failures": 1,
+      "cited_sentences": 88,
+      "supports": 65,
+      "partial": 23,
+      "does_not_support": 0,
+      "sentence_support_rate": 0.7386363636363636,
+      "examples_fully_supported_rate": 0.6551724137931034,
+      "sentence_support_rate_when_correct": 0.8813559322033898
+    },
+    "cost_latency": {
+      "fresh_examples": 86,
+      "cached_examples": 5,
+      "avg_latency_ms": 750,
+      "stance_calls": 87,
+      "stance_schema_retries": 1,
+      "stance_rate_limited": 0,
+      "stance_cost_usd": 0.013833,
+      "judge_calls": 156,
+      "judge_cost_usd": 0.017369,
+      "note": "Costs cover calls made in this run only; cached answers cost nothing. Prices are the GROQ_PRICE_* estimates."
+    }
+  },
+  "rows": [
+    {
+      "example_id": "ethereum-ad2ec655",
+      "asset": "Ethereum",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Funds stolen sit in an Ethereum address, but no price direction indicated.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1138,
+      "cached": true,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "nvidia-17e8acb1",
+      "asset": "NVIDIA",
+      "asset_type": "stock",
+      "source": "BBC Business",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Mentions Nvidia stock was bought and sold, but no direction indicated.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 689,
+      "cached": true,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-40b3b7e5",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "not_in_title",
+      "gold": "bearish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Bitcoin pulled back to $84,000, indicating downward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 603,
+      "cached": true,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states Bitcoin pulled back (price decline), directly reporting bearish movement."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "sp-500-7eb7ecf7",
+      "asset": "S&P 500",
+      "asset_type": "index",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "bullish",
+      "gold_ids": [
+        "S3"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "S&P 500 futures rise by 0.33%",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 576,
+      "cached": true,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states S&P 500 futures rising 0.33%, directly indicating upward pressure."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "usd-jpy-6494267d",
+      "asset": "USD/JPY",
+      "asset_type": "currency_pair",
+      "source": "CNBC Economy",
+      "bucket": "not_in_title",
+      "gold": "bullish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "yen weakened past 157 against the dollar, indicating USD strength versus JPY",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 655,
+      "cached": true,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly states yen weakened past 157 against the dollar, i.e. USD/JPY rose."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "eur-usd-07731347",
+      "asset": "EUR/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss volatility and potential swings but give no clear directional pressure on EUR/USD.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1074,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "boe-8e91ab05",
+      "asset": "Bank of England",
+      "asset_type": "central_bank",
+      "source": "Bank of England",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences only describe a meeting and its purpose, no policy direction indicated.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 483,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "gold-0630e25d",
+      "asset": "Gold",
+      "asset_type": "commodity",
+      "source": "CoinDesk",
+      "bucket": "not_in_title",
+      "gold": "bearish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Rising bond yields and a stronger dollar weigh on gold, implying downward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 664,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states rising yields and stronger dollar weigh on gold (downward pressure)."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-17da56d3",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "CoinDesk",
+      "bucket": "not_in_title",
+      "gold": "bullish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Oil back on the rise as Iran denies report of deal talks",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 661,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Directly states oil is back on the rise, explicitly bullish."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-19202932",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 states firm expectations of more interest rate hikes by the Fed, indicating tighter policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 629,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states firm expectations of more Fed rate hikes, directly hawkish."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "nasdaq-f47dab91",
+      "asset": "Nasdaq",
+      "asset_type": "index",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "bullish",
+      "gold_ids": [
+        "S3"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "Nasdaq 100 futures advance 0.34% indicating upward pressure on the Nasdaq index.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 562,
+      "cached": false,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states Nasdaq 100 futures advance 0.34%, directly bullish for Nasdaq."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "ethereum-1b34936c",
+      "asset": "Ethereum",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 says the fund will be on Ethereum, indicating new usage and potential demand.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 540,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "States a major institutional fund is deploying on Ethereum first, a direct positive signal."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-8091a5c4",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "multi_asset",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "bitcoin slides below $83,000 and rising yields and a stronger dollar weigh on it",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 900,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Directly reports bitcoin sliding below $83,000, confirming downward price movement."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states rising yields and stronger dollar 'weigh on bitcoin' (downward pressure)."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "sp-500-7d228751",
+      "asset": "S&P 500",
+      "asset_type": "index",
+      "source": "MarketWatch Top Stories",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 says the S&P 500 outperformed richest Americans over the past 12 months",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 549,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Retrospective outperformance implies past gains, not forward upward pressure; requires inference."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "usd-jpy-9c88181b",
+      "asset": "USD/JPY",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "Sentences mention AUD/JPY and JPY vs AUD, not USD/JPY.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 723,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "eur-usd-9777497d",
+      "asset": "EUR/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "neutral",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Euro near three‑month lows and flat after recent drops, indicating downward pressure on EUR/USD.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 788,
+      "cached": false,
+      "support": null,
+      "support_error": "http"
+    },
+    {
+      "example_id": "oil-be5b7680",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 says ship‑to‑ship transfer capacity is at its limits, tightening crude supply",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 796,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Reports supply/logistics constraint on crude flows; bullish inference required, no explicit price direction."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-57d6e4a0",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "CoinDesk",
+      "bucket": "multi_asset",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Traders price in four Fed rate hikes by June 2027, indicating tighter policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1139,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly reports traders pricing in 4 Fed rate hikes, which is tighter/hawkish policy."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "sp-500-f6e8a59b",
+      "asset": "S&P 500",
+      "asset_type": "index",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "bearish",
+      "gold_ids": [
+        "S3"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2",
+        "S3"
+      ],
+      "why": "S&P 500 slipped for a third session and faces pressure from rising bond yields and oil prices.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 713,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Refers to global equities/risk assets broadly, not specifically the S&P 500."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states the S&P 500 slipped for a third session."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "eur-usd-2c809d8a",
+      "asset": "EUR/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss EUR/GBP, not EUR/USD, giving no direction for EUR/USD.",
+      "citation_valid": true,
+      "first_attempt_ok": false,
+      "latency_ms": 2325,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-bedf4e39",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "MarketWatch Top Stories",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 1,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 mentions elevated oil prices but does not indicate a price direction for crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 638,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "fed-28c5a40f",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "MarketWatch Top Stories",
+      "bucket": "not_in_title",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Fed bracing for additional interest-rate hikes indicates tighter policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 663,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states the Fed is bracing for additional interest-rate hikes."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-2655ae05",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "multi_asset",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 says oil prices ease, indicating downward pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 964,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Directly states oil prices are easing, confirming bearish direction."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-50d2ea58",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S3"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "S3 notes persistent hawkish sentiment about the Fed's monetary policy outlook.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 758,
+      "cached": false,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states persistent hawkish sentiment surrounding the Federal Reserve's monetary policy outlook."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-53b162d6",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "S3 reports a further decline in totals, indicating downward pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 738,
+      "cached": false,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "partial",
+          "reason": "Reports declining tanker traffic; relevant to oil but direction ambiguous without context."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-d1286ec1",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "MarketWatch Top Stories",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 says a hot jobs report could pressure the Federal Reserve to raise interest rates again",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 793,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly states Fed could raise interest rates, which is hawkish policy."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-bd07be1d",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "bullish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 notes higher oil prices, indicating upward pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1234,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states 'higher Oil prices,' directly reporting upward price movement for crude oil."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-5603ff08",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "multi_asset",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 mentions market bets about Fed hikes but provides no direct Fed policy signal",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 672,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-54802455",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "biofuels become more cost‑competitive as crude oil prices spike",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 869,
+      "cached": false,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "partial",
+          "reason": "Describes biofuel competitiveness as a consequence of high oil prices; does not itself assert upward pressure."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-33e12af6",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "Mentions oil prices influencing expectations but gives no direction on oil price",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 362,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-46b6535f",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "S3 notes Venezuelan crude production rising to 1.6‑1.8 million bpd, implying increased supply pressure on oil prices.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 657,
+      "cached": false,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "partial",
+          "reason": "Projects increased Venezuelan supply; bearish inference requires assuming more supply lowers prices."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-1d5b444f",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "multi_asset",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 mentions high oil prices but does not indicate upward or downward pressure on crude oil",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1425,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-cb109e50",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Russia began commercial crude exports from Vostok, adding new supply to the market.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 654,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "New oil exports begin, increasing supply and pressuring prices down."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly reports new crude barrels entering the market, bearish for price."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-762aa9c6",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Sentences discuss market uncertainty and lack of clear baseline, without indicating price direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 941,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-e897abe6",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "not_in_title",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "S2 notes crude oil price was higher in 2022 than today, but gives no clear direction for current price pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 747,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "gbp-usd-c00179be",
+      "asset": "GBP/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S3"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "why": "Sentences report GBP/USD softening, trading lower around 1.3210 and GBP weakening against USD.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 741,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states pair is softening and staying bearish."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly reports pair trading in negative territory (downward)."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states GBP weakens against USD, confirming bearish direction."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "silver-a91581a8",
+      "asset": "Silver",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Price holds below $64, trading sideways, weekly decline 3.7%, bears eye bottom of range.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 672,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "States silver held below $64 on bearish Fed hiking and yield drivers."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly reports 3.7% weekly decline and bears targeting lower levels."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "ecb-e8fab1fb",
+      "asset": "European Central Bank",
+      "asset_type": "central_bank",
+      "source": "European Central Bank",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "The sentence reports a survey participation count, not ECB policy direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 689,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "nvidia-f607a8b0",
+      "asset": "NVIDIA",
+      "asset_type": "stock",
+      "source": "MarketWatch Top Stories",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss Micron's role and potential to dethrone Nvidia, without clear directional impact on Nvidia's stock.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 455,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "gbp-usd-edc8b289",
+      "asset": "GBP/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S3"
+      ],
+      "why": "S1 notes underperformance and doubts BoE tightening; S3 shows GBP near three‑month low against USD.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 448,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states GBP underperforms, directly indicating bearish pressure on GBP/USD."
+        },
+        {
+          "id": "S3",
+          "verdict": "partial",
+          "reason": "Mentions near three-month low (bearish context) but reports marginal uptick, mixed signal."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "silver-d94f04b0",
+      "asset": "Silver",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bullish",
+      "gold_ids": [
+        "S2",
+        "S3"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2",
+        "S3"
+      ],
+      "why": "S2 notes silver inching higher; S3 says silver finds support, indicating upward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 677,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly reports silver price inching higher, an upward movement."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states silver is finding underlying support, a bullish factor."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "ecb-c5317638",
+      "asset": "European Central Bank",
+      "asset_type": "central_bank",
+      "source": "European Central Bank",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence reports a board member's resignation, no policy direction indicated.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1578,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "boe-f9d19e89",
+      "asset": "Bank of England",
+      "asset_type": "central_bank",
+      "source": "Bank of England",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss new office space, not monetary policy direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 513,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "gold-5bbaf1af",
+      "asset": "Gold",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Gold falls in India according to FXStreet data",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 624,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states gold falls, directly indicating downward price pressure."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states gold prices fell, directly indicating downward price pressure."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "ethereum-6b81708c",
+      "asset": "Ethereum",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss Ethereum's future vision, not price direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 653,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "gbp-usd-da6bff4f",
+      "asset": "GBP/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Euro near three-month highs against GBP indicates GBP weakening versus EUR, implying GBP/USD pressure down.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 651,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Reports EUR strength vs GBP, suggesting GBP weakness but in a different pair (EUR/GBP)."
+        },
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Same as S1; EUR near highs vs GBP implies GBP softness but not directly GBP/USD."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-5b6ef49a",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss privacy features, not price direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 568,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "usd-jpy-1a9c0cb1",
+      "asset": "USD/JPY",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Yen recovers from low and USD/JPY drifts lower, indicating downward pressure on the pair.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 771,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "JPY recovering from low vs USD means USD/JPY is falling."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states USD/JPY pair drifts lower."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "ecb-a7954c1c",
+      "asset": "European Central Bank",
+      "asset_type": "central_bank",
+      "source": "European Central Bank",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions ECB investing in tokenised securities, no policy direction indicated.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 635,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "boe-fc40101f",
+      "asset": "Bank of England",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Sentences discuss possible pressure but give no clear hawkish or dovish direction for the BoE.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 410,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "gold-e20949e6",
+      "asset": "Gold",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Gold stays below $4,300 and confined near weekly low with bearish backdrop, indicating downward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 716,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Describes range-bound action; Fed hike bets are bearish but overall tone is consolidation, not clear downward pressure."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states 'bearish fundamental backdrop' and gold struggling near weekly low, directly supporting bearish stance."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-fbd9efdc",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 states Bitcoin ETFs erased a $5.8 billion hole, implying positive inflows for Bitcoin.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 660,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Directly reports Bitcoin ETFs recovered from major outflows, implying renewed inflows and upward pressure."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "sp-500-7cb25acd",
+      "asset": "S&P 500",
+      "asset_type": "index",
+      "source": "MarketWatch Top Stories",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Both sentences note top-performing stocks driving S&P 500 gains, indicating upward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 656,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Describes one component stock's performance, not the index direction itself."
+        },
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "About a single stock leading gainers; does not state the index is rising."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "usd-jpy-6f0acddc",
+      "asset": "USD/JPY",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S2",
+        "S3"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "The currency pair depreciates as the Japanese Yen (JPY) gathers support.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 815,
+      "cached": false,
+      "support": [
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states the currency pair (USD/JPY) depreciates, directly bearish."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "eur-usd-adf422c7",
+      "asset": "EUR/USD",
+      "asset_type": "currency_pair",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S2",
+        "S3"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2",
+        "S3"
+      ],
+      "why": "Euro trades marginally lower and USD outperforms, indicating downward pressure on EUR/USD.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 656,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states EUR trades lower against USD, directly reporting bearish direction."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "States the pair is broadly under pressure as USD outperforms, directly bearish."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "boe-4b7e6752",
+      "asset": "Bank of England",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "dovish",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "dovish",
+      "status": "ok",
+      "strength": 1,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 notes experts doubt BoE tightening prospects, implying less aggressive policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 733,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Doubting tightening implies dovish lean, but framed as expert doubt, not direct BoE stance."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "gold-aa4fdb81",
+      "asset": "Gold",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Sentences note bearish bias and near‑term pressure after gold slipped below key levels.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 802,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states 'bearish bias' for Gold."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "States Gold 'remains under near-term pressure' and slipped below 4250."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-ee073941",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "neutral",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "neutral",
+      "status": "ok",
+      "strength": 1,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Bitcoin steadies near $84,000, indicating no clear upward or downward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 885,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "'Steadies' directly indicates no directional movement, matching neutral stance."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "sp-500-9b7f31d1",
+      "asset": "S&P 500",
+      "asset_type": "index",
+      "source": "MarketWatch Top Stories",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Micron could become biggest driver of S&P 500 profit growth, implying upward pressure on the index.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 495,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "States profit growth driver for S&P 500; bullish inference needed from earnings to price."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "eur-usd-df31d844",
+      "asset": "EUR/USD",
+      "asset_type": "currency_pair",
+      "source": "European Central Bank",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "The sentence only mentions a title without indicating price direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 515,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-14764542",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "neutral",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "neutral",
+      "status": "ok",
+      "strength": 1,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 says Bitcoin consolidates near $84,000, indicating no clear upward or downward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 975,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states Bitcoin is consolidating, which is a neutral/flat description."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "eur-usd-0db83fdd",
+      "asset": "EUR/USD",
+      "asset_type": "currency_pair",
+      "source": "European Central Bank",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions euro area outlook without indicating price direction for EUR/USD.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 574,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-94abdd4a",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 1,
+      "evidence_ids": [
+        "S3"
+      ],
+      "why": "S3 says surging bond volatility could dampen crypto spirits, implying possible short-term downside.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 861,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "fed-51c6b981",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "Federal Reserve",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence discusses regulatory proposals, not monetary policy direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 328,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-410cd1f0",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Milder bear markets and suggestion that bull markets may follow indicate upward pressure on Bitcoin.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 579,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states bull markets may be next, directly bullish for Bitcoin."
+        },
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Describes milder bear market and structural factors; requires inference to reach bullish stance."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-9e04ade8",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "CNBC Economy",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S2"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2"
+      ],
+      "why": "Markets expect the Fed to take a firmer hand on inflation, indicating tighter policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 589,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly states the central bank will take a firmer hand on inflation, i.e., hawkish."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-aee754cf",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "neutral",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "neutral",
+      "status": "ok",
+      "strength": 1,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Sentences note bitcoin staying calm with VIX near yearly low, indicating no directional pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 820,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Directly states bitcoin stays calm, indicating no directional pressure."
+        },
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Low BVIV is consistent with neutral but requires inference from volatility to direction."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-74b49f35",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "CNBC Finance",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Policymaker says modest moves ahead and may need to raise rates further to tame inflation",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 757,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Fed official says rate moves likely to tame inflation, indicating hawkish lean."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states policymakers may need to raise rates further to target inflation."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-a4c4908a",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "bullish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Bitcoin topped a key long-term moving average and returned above its one-year average, indicating upward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 415,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly reports Bitcoin topping a key long-term moving average, a bullish signal."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "States Bitcoin returned above its one-year average, a direct bullish technical signal."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-85dcbdb6",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss Fed proposals on stablecoin regulation, not monetary policy direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 318,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-35858eb3",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Bitcoin holders are cashing out, indicating selling pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 882,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly reports Bitcoin holders cashing out (selling), a direct bearish signal."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-57986ba3",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 1,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 mentions Fed hike bets, indicating expectations of tighter policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1509,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly mentions 'Fed hike bets,' directly indicating a hawkish policy lean."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-a5bac36a",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Bitcoin slides lower as bond yields hit highest since 2007, sending crypto down",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 791,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Directly states Bitcoin is sliding to a lower price."
+        },
+        {
+          "id": "S2",
+          "verdict": "partial",
+          "reason": "Reports crypto lower but also notes dip-buying; about crypto broadly, not Bitcoin specifically."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-1c7c4aad",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "Federal Reserve",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions enforcement action, not policy direction",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1129,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "bitcoin-68b7e55b",
+      "asset": "Bitcoin",
+      "asset_type": "crypto",
+      "source": "CoinDesk",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 1,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence notes hidden costs of holding Bitcoin, implying downward pressure.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 694,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Mentions hidden costs of holding bitcoin; relevant but doesn't directly state price pressure."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-467d9df2",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "CNBC Finance",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Sentences note the Fed raising rates and hint at further hikes, indicating tighter policy.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 519,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Suggests further hikes but framed as speculation, not a direct policy statement."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly reports the Fed's decision to raise interest rates, a hawkish action."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-6b0b4b03",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "S1 reports Nigeria's crude output hitting a six-year high, indicating increased supply pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 725,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Reports high crude output; bearish inference from supply increase requires reader's economic reasoning."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-a3313e09",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1",
+        "S3"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S3"
+      ],
+      "why": "S1 mentions a hawkish Fed outlook; S3 notes bets on further Fed rate hikes.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 675,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states 'hawkish Fed outlook,' directly confirming the stance."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly mentions 'further Federal Reserve rate hikes,' directly indicating hawkish policy."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "oil-192915ae",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S3"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S3"
+      ],
+      "why": "Sentences note oil prices easing and a pullback in crude oil, indicating downward pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 459,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly states 'oil prices ease,' directly indicating downward pressure on crude oil."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states 'a pullback in crude oil prices,' directly indicating bearish direction."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-af1a2195",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "Federal Reserve",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions a Fed approval, not policy direction",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 591,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-eb1d833b",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "why": "Freight costs raise crude import prices, making oil more expensive before refinery.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 600,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "About freight-driven import costs, not crude commodity price directly."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly states oil is getting more expensive, indicating upward price pressure."
+        },
+        {
+          "id": "S3",
+          "verdict": "partial",
+          "reason": "Freight as a cost driver for buyers; related factor, not crude price itself."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-895dc3cd",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1"
+      ],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences mention Fed hiking bets but give no direct policy signal.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 789,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-e7507416",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "bearish",
+      "gold_ids": [
+        "S1",
+        "S2"
+      ],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S1",
+        "S2"
+      ],
+      "why": "Price slipped below $92 and drifts lower, indicating downward pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 491,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "partial",
+          "reason": "Reports price slip but explicitly states bullish potential intact, weakening bearish signal."
+        },
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Directly reports WTI drifting lower, extending a pullback from $95.80."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-01477292",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "Federal Reserve",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions a board approval, not policy direction",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 305,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-4e9981b8",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "standard",
+      "gold": "bullish",
+      "gold_ids": [
+        "S1",
+        "S4"
+      ],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S2",
+        "S4"
+      ],
+      "why": "Brent on track for weekly gain and trading higher at $105.65 versus $102 earlier.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 427,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "States Brent crude on track for weekly gain due to supply security concerns."
+        },
+        {
+          "id": "S4",
+          "verdict": "supports",
+          "reason": "Reports Brent crude trading higher than Monday, directly indicating upward price movement."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-03913758",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S2",
+        "S3"
+      ],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentences discuss BoE reaction to Fed hike without indicating Fed policy direction.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 685,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-b98e26f9",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bearish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2",
+        "S3"
+      ],
+      "why": "Discounted Iraqi crude purchases and $15‑$20.80 per barrel discounts imply downward price pressure on crude oil.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 491,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states Iraq pays steep discounts to move barrels, indicating downward price pressure."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Directly reports $15–$20.80/barrel discounts on crude, a clear bearish price signal."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-1d204b82",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "Federal Reserve",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions enforcement actions, not policy direction",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1972,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    },
+    {
+      "example_id": "oil-9e52c6fd",
+      "asset": "Crude oil",
+      "asset_type": "commodity",
+      "source": "OilPrice.com",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "bullish",
+      "status": "ok",
+      "strength": 2,
+      "evidence_ids": [
+        "S2",
+        "S3"
+      ],
+      "why": "Oil prices edge higher and are set for a slight 2% weekly gain.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1210,
+      "cached": false,
+      "support": [
+        {
+          "id": "S2",
+          "verdict": "supports",
+          "reason": "Explicitly states oil prices edge higher, directly bullish for crude oil."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states oil prices set for a 2% weekly gain, directly bullish."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-9707f507",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "FXStreet",
+      "bucket": "standard",
+      "gold": "hawkish",
+      "gold_ids": [
+        "S1",
+        "S3"
+      ],
+      "pred": "hawkish",
+      "status": "ok",
+      "strength": 3,
+      "evidence_ids": [
+        "S1",
+        "S3"
+      ],
+      "why": "Sentences cite hawkish Fed expectations and signals driving USD strength.",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 1259,
+      "cached": false,
+      "support": [
+        {
+          "id": "S1",
+          "verdict": "supports",
+          "reason": "Explicitly cites 'hawkish Fed expectations' as driver of USD surge."
+        },
+        {
+          "id": "S3",
+          "verdict": "supports",
+          "reason": "Explicitly states 'hawkish signals from Federal Reserve officials' as primary driver."
+        }
+      ],
+      "support_error": null
+    },
+    {
+      "example_id": "fed-069ada7a",
+      "asset": "Federal Reserve",
+      "asset_type": "central_bank",
+      "source": "Federal Reserve",
+      "bucket": "standard",
+      "gold": "unclear",
+      "gold_ids": [],
+      "pred": "unclear",
+      "status": "unclear",
+      "strength": 0,
+      "evidence_ids": [
+        "S1"
+      ],
+      "why": "Sentence mentions enforcement action termination, not policy direction",
+      "citation_valid": true,
+      "first_attempt_ok": true,
+      "latency_ms": 388,
+      "cached": false,
+      "support": null,
+      "support_error": null
+    }
+  ]
+}
