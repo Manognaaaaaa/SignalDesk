@@ -16,7 +16,8 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
  *    recording hashes, token counts and cost - never the key, headers or prompt text.
  */
 
-export type Stage = "stance" | "brief";
+/** "eval_judge" is only used by eval scripts, whose calls are logged locally (llm_calls allows stance | brief). */
+export type Stage = "stance" | "brief" | "eval_judge";
 
 export type CallStatus = "ok" | "schema_retry" | "failed" | "timeout" | "rate_limited";
 

@@ -17,6 +17,8 @@
     "seed": "tsx --conditions=react-server --env-file=.env.local scripts/seed.ts",
     "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/run-ingest.ts",
     "eval": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval-stance.ts",
+    "eval:sample": "tsx --conditions=react-server --env-file=.env.local scripts/eval/sample-judge-set.ts",
+    "eval:judge": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval/run-judge-eval.ts",
     "gen-secret": "tsx scripts/gen-secret.ts",
     "check": "npm run typecheck && npm run lint && npm run test",
     "migrate": "tsx --env-file=.env.local scripts/migrate.ts",

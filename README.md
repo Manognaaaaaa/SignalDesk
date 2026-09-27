@@ -79,6 +79,27 @@ For a currency pair BASE/QUOTE, bullish means the base currency strengthens. For
 
 ## 5. Stance evaluation
 
+### 5.1 Judge eval on real, hand-labelled feed items (the one to cite)
+
+The Judge is evaluated on real stored (sentences, asset) pairs labelled by hand, not on synthetic snippets.
+
+1. `npm run eval:sample -- --n 200` samples examples from `asset_mentions` into `eval/judge/labels.csv`, with a fixed seed. The sample is stratified by asset and source, with a quota of harder cases (asset not in the headline, or 3+ assets in the article). Model predictions are never exported. Re-running tops the file up and never touches existing labels.
+2. Label `gold_stance` and `gold_supporting_sentence_ids` following [`eval/LABELLING_GUIDE.md`](eval/LABELLING_GUIDE.md).
+3. `npm run eval:judge -- --spot-check 30` runs the production `scoreStance` (same prompt version, schema and retry) and writes `eval/results/<time>_<model>_<prompt>.{json,md}`. The report covers:
+   - accuracy, macro F1, per-class precision/recall/F1, a confusion matrix, and slices by asset type, bucket and source;
+   - citation validity and the first-attempt schema pass rate;
+   - overlap between cited IDs and gold IDs;
+   - **citation support**: an LLM-as-judge (`qwen/qwen3.8-27b` by default, a different model family) that rates each cited sentence as supports / partial / does not support under a strict rubric, with only "supports" counting;
+   - a spot-check file for checking the judge by hand.
+
+   Answers are cached in `eval/.cache/`, so a re-run costs nothing.
+
+Stance prompts are versioned in `src/lib/ai/stance-prompts/` (`STANCE_PROMPT_VERSION`, default `v1`). Each result records the version and a hash of the template, and a test freezes v1's text.
+
+_Results: pending hand labelling._
+
+### 5.2 Synthetic smoke test
+
 `npm run eval` runs the **production** stance step (same prompts, schema and checks) on `eval/stance_cases.json` and writes `eval/results.json`.
 
 | Model | Cases | Accuracy | Unclear recall / precision | Evidence validity | Failed | Avg latency | Calls | Est. cost |
@@ -89,7 +110,7 @@ Per stance: bullish 6/6, bearish 8/8, hawkish 4/4, dovish 3/3, neutral 4/4, uncl
 
 **Read this honestly:**
 
-- The 30 cases are short, synthetic, mostly clear-cut snippets written for this project, not real feed items. A perfect score shows the pipeline and prompt behave correctly on unambiguous inputs. It does **not** show accuracy on messy real headlines.
+- This is a smoke test, not an accuracy claim; see 5.1. The 30 cases are short, synthetic, mostly clear-cut snippets written for this project, not real feed items. A perfect score shows the pipeline and prompt behave correctly on unambiguous inputs. It does **not** show accuracy on messy real headlines.
 - The next step is 50+ labelled real items, including hard ones: mixed signals, indirect mentions, and currency pairs where the news is about the quote currency.
 - ⚠ **Label review:** the case labels were drafted with AI assistance. **They have not yet been reviewed and corrected by hand by the project author.** Review `eval/stance_cases.json` before citing these numbers, and replace this note with "Labels reviewed and corrected by hand on <date>".
 - The rate-limit retries come from Groq's free tier (8,000 tokens per minute for this model). The wrapper backs off and retries automatically.
@@ -160,7 +181,10 @@ npm run eval
 - `npm run dev`: app at http://localhost:3000.
 - `npm run check`: typecheck, lint and unit tests (no keys, no network).
 - `npm run ingest`: fetch, stories, assets, stances and mood, run locally. Add `-- --no-score` to skip the model.
-- `npm run eval`: stance evaluation (needs `GROQ_API_KEY`).
+- `npm run eval`: synthetic stance smoke test (needs `GROQ_API_KEY`).
+- `npm run eval:sample` / `npm run eval:judge`: the hand-labelled Judge eval (section 5.1).
+- `npm run cron -- status`: checks the production pg_cron schedule (needs `DATABASE_URL`).
+- Collecting data locally: `scripts/windows/ingest-local.ps1` runs `npm run ingest` and appends to `logs/ingest-local.log`. Schedule it with Windows Task Scheduler to top up the eval pool from a home IP, which also reaches FXStreet.
 
 Without `GROQ_API_KEY`, the job still ingests, groups stories and detects assets. The UI shows mentions without stances and an "AI scoring offline" label, and the brief falls back to a template built from mood data.
 
@@ -174,7 +198,7 @@ Without `GROQ_API_KEY`, the job still ingests, groups stories and detects assets
    select vault.create_secret('https://<your-app>.vercel.app', 'app_base_url');
    select vault.create_secret('<same value as CRON_SECRET>', 'cron_secret');
    ```
-5. Run `supabase/migrations/004_cron.sql`.
+5. Run `supabase/migrations/004_cron.sql`, or do steps 4 and 5 in one go with `npm run cron -- setup --url https://<your-app>.vercel.app`. That needs `DATABASE_URL` (session pooler) and `CRON_SECRET` in `.env.local`. `npm run cron -- status` checks the schedule: extensions, Vault secrets (the stored secret is compared with your local one inside Postgres and never printed), the job, and its last runs with their HTTP responses.
 6. Trigger one ingest in production, either with the bearer:
    ```bash
    curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://<your-app>.vercel.app/api/jobs/ingest
