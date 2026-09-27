@@ -9,3 +9,7 @@
 **Known leak.** Before labelling, the labeller had seen the live Gold asset page, which shows the production stance (bearish) for 4 rows: `gold-0630e25d`, `gold-5bbaf1af`, `gold-e20949e6`, `gold-aa4fdb81`. Those 4 are not fully blind and are marked in `notes`.
 
 **Author review.** When the author checks a row, set `labelled_by` to `claude-opus-5.5+author-reviewed`, or to `author` if they changed the label. The report counts each value.
+
+## Source text
+
+`labels.csv` (and the `*_spotcheck.md` files) contain headlines and short excerpt sentences from the listed publishers. This is the same text the live site already shows, each row with its source name and a link to the original article. It is included only so that the evaluation can be reproduced. The text belongs to its publishers. Full articles are never stored. To have a row removed, open an issue.
