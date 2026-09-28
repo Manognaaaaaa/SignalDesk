@@ -11,7 +11,8 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
  *  - 15 s timeout (AbortController); retries ONLY on 429/5xx (max 2, 500/1500 ms + jitter,
  *    honours Retry-After), never on 400/401/403,
  *  - one schema retry with the zod error appended; after that the caller falls back to a
- *    template (we never regex-guess JSON out of broken output),
+ *    template (we never regex-guess JSON out of broken output). Each validation failure is
+ *    classified (invalid_json / bad_citation / schema) in the audit row and in the result,
  *  - daily call cap, in-memory cache by prompt hash, and one llm_calls audit row per attempt
  *    recording hashes, token counts and cost - never the key, headers or prompt text.
  */
@@ -59,9 +60,24 @@ export type LlmDeps = {
   timeoutMs: number;
 };
 
+/**
+ * Why an output failed validation: not JSON at all, cited an ID that is not in the input
+ * (evidence_ids / article_ids), or broke some other schema rule (wrong enum, missing field...).
+ */
+export type ValidationFailure = "invalid_json" | "bad_citation" | "schema";
+
+/** Fields that hold citations; a zod issue under one of them counts as a bad citation. */
+const CITATION_FIELDS = new Set(["evidence_ids", "article_ids"]);
+
+export function classifyIssues(issues: { path: PropertyKey[] }[]): ValidationFailure {
+  return issues.some((i) => i.path.some((p) => typeof p === "string" && CITATION_FIELDS.has(p))) ? "bad_citation" : "schema";
+}
+
 export type LlmResult<T> =
-  | { ok: true; data: T; cached: boolean; calls: number }
-  | { ok: false; reason: "no_key" | "cap" | "schema" | "http" | "timeout"; calls: number };
+  /** `firstFailure` is set when the first answer was invalid and the one retry fixed it. */
+  | { ok: true; data: T; cached: boolean; calls: number; firstFailure: ValidationFailure | null }
+  | { ok: false; reason: "no_key" | "cap" | "http" | "timeout"; calls: number }
+  | { ok: false; reason: "schema"; failure: ValidationFailure; firstFailure: ValidationFailure; calls: number };
 
 export const BACKOFF_MS = [500, 1500];
 const MAX_HTTP_RETRIES = 2;
@@ -168,7 +184,7 @@ export async function callJson<T>(
 
   const hash = promptHash(system, user, deps.model, deps.promptVersion);
   const hit = cache.get(hash);
-  if (hit !== undefined) return { ok: true, data: hit as T, cached: true, calls: 0 };
+  if (hit !== undefined) return { ok: true, data: hit as T, cached: true, calls: 0, firstFailure: null };
 
   try {
     if ((await deps.countCallsToday()) >= deps.maxCallsPerDay) return { ok: false, reason: "cap", calls: 0 };
@@ -179,7 +195,7 @@ export async function callJson<T>(
   let attempt = 0;
   let calls = 0;
   let userMsg = user;
-  let schemaRetried = false;
+  let firstFailure: ValidationFailure | null = null;
   let httpRetries = 0;
 
   for (;;) {
@@ -221,6 +237,7 @@ export async function callJson<T>(
 
       let parsedJson: unknown;
       let problem: string | null = null;
+      let failure: ValidationFailure = "invalid_json";
       try {
         parsedJson = JSON.parse(res.choices[0]?.message.content ?? "");
       } catch {
@@ -231,18 +248,19 @@ export async function callJson<T>(
         if (v.success) {
           await deps.logCall({ ...base, ...usage, status: "ok", error: null });
           cache.set(hash, v.data);
-          return { ok: true, data: v.data, cached: false, calls };
+          return { ok: true, data: v.data, cached: false, calls, firstFailure };
         }
+        failure = classifyIssues(v.error.issues);
         problem = v.error.issues.map((i) => `${i.path.join(".") || "(root)"}: ${i.message}`).join("; ");
       }
-      if (!schemaRetried) {
-        schemaRetried = true;
-        await deps.logCall({ ...base, ...usage, status: "schema_retry", error: "schema_invalid" });
+      if (firstFailure === null) {
+        firstFailure = failure;
+        await deps.logCall({ ...base, ...usage, status: "schema_retry", error: failure });
         userMsg = `${user}\n\nYour previous output failed validation: ${problem.slice(0, 500)} Return corrected JSON only.`;
         continue;
       }
-      await deps.logCall({ ...base, ...usage, status: "failed", error: "schema_invalid" });
-      return { ok: false, reason: "schema", calls };
+      await deps.logCall({ ...base, ...usage, status: "failed", error: failure });
+      return { ok: false, reason: "schema", failure, firstFailure, calls };
     } catch (err) {
       clearTimeout(timer);
       const status = httpStatus(err);

@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import type { AssetType } from "@/config/assets-seed";
 import type { Sentence } from "@/lib/ingest/sentences";
-import { callJson, getDefaultDeps, type LlmDeps } from "./llm";
+import { callJson, getDefaultDeps, type LlmDeps, type ValidationFailure } from "./llm";
 import { allowedStances, type Stance } from "./prompts";
 import { activeStancePrompt, type StancePrompt } from "./stance-prompts";
 
@@ -10,7 +10,8 @@ import { activeStancePrompt, type StancePrompt } from "./stance-prompts";
  * Stance scoring for ONE (article, asset) pair = ONE model call (plus at most one schema retry).
  * The schema is built per call: the stance enum depends on the asset type and evidence_ids must
  * be IDs of the stored sentences. A model that cites a sentence that does not exist fails
- * validation, gets one retry with the error, and is then recorded as 'failed'.
+ * validation, gets one retry with the error, and is then recorded as 'failed' (stance unclear,
+ * excluded from the mood) with its failure_reason - never dropped silently.
  * Quotes are never taken from the model - the UI looks sentences up by ID.
  */
 
@@ -43,12 +44,15 @@ export type SignalRow = {
   evidence_ids: string[];
   why: string;
   status: "ok" | "unclear" | "failed";
+  /** Set only when status is 'failed': why the second answer was still invalid. */
+  failure_reason: ValidationFailure | null;
   model: string;
   prompt_version: string;
 };
 
 /** Either a row to save, or "skipped" (no key / cap / network): the pair is retried on a later run. */
-export type StanceOutcome = { kind: "saved"; row: SignalRow; calls: number } | { kind: "skipped"; reason: string; calls: number };
+/** `firstFailure`: why the first answer was invalid (null if it passed first time). */
+export type StanceOutcome = { kind: "saved"; row: SignalRow; calls: number; firstFailure: ValidationFailure | null } | { kind: "skipped"; reason: string; calls: number };
 
 /** `prompt` defaults to the version selected by STANCE_PROMPT_VERSION; its version is recorded on the row and in llm_calls. */
 export async function scoreStance(input: StanceInput, deps?: LlmDeps, prompt: StancePrompt = activeStancePrompt()): Promise<StanceOutcome> {
@@ -64,12 +68,13 @@ export async function scoreStance(input: StanceInput, deps?: LlmDeps, prompt: St
     return {
       kind: "saved",
       calls: res.calls,
-      row: { ...meta, stance: res.data.stance, strength: res.data.strength, evidence_ids: evidence, why: res.data.why.trim(), status: res.data.stance === "unclear" ? "unclear" : "ok" },
+      firstFailure: res.firstFailure,
+      row: { ...meta, stance: res.data.stance, strength: res.data.strength, evidence_ids: evidence, why: res.data.why.trim(), status: res.data.stance === "unclear" ? "unclear" : "ok", failure_reason: null },
     };
   }
   if (res.reason === "schema") {
     // Invalid twice: record the failure so we do not pay for it again every run.
-    return { kind: "saved", calls: res.calls, row: { ...meta, stance: "unclear", strength: 0, evidence_ids: [], why: "", status: "failed" } };
+    return { kind: "saved", calls: res.calls, firstFailure: res.firstFailure, row: { ...meta, stance: "unclear", strength: 0, evidence_ids: [], why: "", status: "failed", failure_reason: res.failure } };
   }
   return { kind: "skipped", reason: res.reason, calls: res.calls };
 }

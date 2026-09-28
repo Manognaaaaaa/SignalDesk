@@ -74,7 +74,7 @@ For a currency pair BASE/QUOTE, bullish means the base currency strengthens. For
 
 1. At ingest, the title becomes `S1` and the excerpt's sentences `S2..Sn`. For each matched asset, SignalDesk stores only the sentences that mention it plus one neighbour on each side (max 6, ≤ 400 chars each) in `asset_mentions.sentences`.
 2. The stance prompt contains only those numbered sentences, inside `<sentences>` tags declared as untrusted data.
-3. The zod schema is built **per call** from the stored IDs: `evidence_ids` must be 1–3 IDs from that set, and `stance` must be allowed for the asset type. A violation is retried once with the validation error, then recorded as `failed`.
+3. The zod schema is built **per call** from the stored IDs: `evidence_ids` must be 1–3 IDs from that set, and `stance` must be allowed for the asset type. A violation is retried once with the validation error. If the second answer is still invalid, it is saved as `failed`, with stance `unclear` and a `failure_reason`: `invalid_json`, `bad_citation` (an ID that isn't in the input) or `schema`. It is never dropped silently, and the mood never uses it. Each attempt's reason is also written to `llm_calls.error`. Each run's `job_runs.stats.validation` records how many answers passed first time, how many a retry fixed and how many still failed, with rates and reasons.
 4. The UI renders evidence by looking the IDs up in `asset_mentions`. The model's output never contains quote text to render. The brief is checked the same way: every bullet's `article_ids` must be among the signals the model was given, and its evidence text is looked up from the database.
 
 ## 5. Stance evaluation
