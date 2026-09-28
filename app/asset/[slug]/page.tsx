@@ -5,7 +5,10 @@ import { MoodCard } from "@/components/MoodCard";
 import { StanceBadge } from "@/components/StanceBadge";
 import { StoryList } from "@/components/StoryList";
 import { panel, textLink } from "@/components/ui";
-import { getAssetBySlug, getMoodSeries, getSignalsForAsset, getStoriesForAsset } from "@/lib/data";
+import { getAssetBySlug, getMoodSeries, getPriceSeries, getSignalsForAsset, getSignalTimeline, getStoriesForAsset } from "@/lib/data";
+import { PriceMoodChart } from "@/components/PriceMoodChart";
+import { PRICE_SYMBOLS } from "@/config/price-symbols";
+import { buildChartRows } from "@/lib/chart";
 import { LastSignalNote } from "@/components/LastSignalNote";
 import { safeHref, timeAgo } from "@/lib/format";
 import { GLOSSARY } from "@/lib/mood/labels";
@@ -18,7 +21,17 @@ export default async function AssetPage({ params }: { params: Promise<{ slug: st
   if (!/^[a-z0-9-]{2,30}$/.test(slug)) notFound();
   const asset = await getAssetBySlug(slug);
   if (!asset) notFound();
-  const [series, stories, signals] = await Promise.all([getMoodSeries([asset.id]), getStoriesForAsset(asset.id, 72, 30), getSignalsForAsset(asset.id, 7)]);
+  const CHART_DAYS = 90;
+  const priceSym = PRICE_SYMBOLS[asset.slug] ?? null;
+  const [series, stories, signals, longMood, prices, timeline] = await Promise.all([
+    getMoodSeries([asset.id]),
+    getStoriesForAsset(asset.id, 72, 30),
+    getSignalsForAsset(asset.id, 7),
+    getMoodSeries([asset.id], CHART_DAYS),
+    priceSym ? getPriceSeries(asset.id, CHART_DAYS) : Promise.resolve([]),
+    getSignalTimeline(asset.id, CHART_DAYS),
+  ]);
+  const chartRows = buildChartRows(prices, longMood.get(asset.id) ?? [], timeline, CHART_DAYS);
   const scored = signals.find((s) => s.status !== "failed" && s.stance !== "unclear");
   const lastSignal = scored ? { stance: scored.stance, at: scored.at } : null;
   const terms = asset.asset_type === "central_bank" ? ["hawkish", "dovish"] : ["bullish", "bearish"];
@@ -32,6 +45,8 @@ export default async function AssetPage({ params }: { params: Promise<{ slug: st
           {terms.map((t) => `${t[0]!.toUpperCase()}${t.slice(1)} = ${GLOSSARY[t]}`).join(" · ")}. Unclear = {GLOSSARY.unclear}.
         </p>
       </div>
+
+      <PriceMoodChart rows={chartRows} signals={timeline} assetType={asset.asset_type} assetSlug={asset.slug} priceLabel={priceSym?.label ?? null} otc={priceSym?.otc} />
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="md:col-span-1">

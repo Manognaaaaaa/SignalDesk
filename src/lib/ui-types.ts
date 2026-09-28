@@ -24,3 +24,5 @@ export type Receipt = SignalWithEvidence & { asset: { slug: string; name: string
 export type LastSignal = { stance: string; at: string };
 export type ActiveAsset = { asset: AssetRow; signals: number; last: LastSignal | null };
 export type SiteStats = { sources: number; articles24h: number; assets: number; signals24h: number; lastUpdated: string | null };
+export type PricePoint = { day: string; close: number };
+export type TimelineSignal = { article_id: string; day: string; at: string; stance: string; strength: number; title: string; source: string };

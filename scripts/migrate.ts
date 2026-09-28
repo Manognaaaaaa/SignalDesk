@@ -1,6 +1,6 @@
 /**
  * npm run migrate [-- --with-cron]
- * Applies supabase/migrations/001..003 and 005 (and 004_cron with --with-cron) directly to the database,
+ * Applies supabase/migrations/001..003, 005 and 006 (and 004_cron with --with-cron) directly to the database,
  * so nobody has to paste SQL into the dashboard. Every migration is idempotent
  * (create if not exists / create or replace / on conflict), so re-running is safe.
  *
@@ -12,7 +12,7 @@ import { readFileSync } from "node:fs";
 import { connectDb } from "./lib/db";
 import { parseArgs } from "./lib/env";
 
-const FILES = ["001_tables.sql", "002_rls.sql", "003_seed_assets.sql", "005_validation.sql"];
+const FILES = ["001_tables.sql", "002_rls.sql", "003_seed_assets.sql", "005_validation.sql", "006_prices.sql"];
 
 async function main() {
   const args = parseArgs();

@@ -126,6 +126,18 @@ Per stance: bullish 6/6, bearish 8/8, hawkish 4/4, dovish 3/3, neutral 4/4, uncl
 - ⚠ **Label review:** the case labels were drafted with AI assistance. **They have not yet been reviewed and corrected by hand by the project author.** Review `eval/stance_cases.json` before citing these numbers, and replace this note with "Labels reviewed and corrected by hand on <date>".
 - The rate-limit retries come from Groq's free tier (8,000 tokens per minute for this model). The wrapper backs off and retries automatically.
 
+## 5b. Mood vs price
+
+Each asset page plots the daily news mood under the daily close for the last 30 or 90 days. Each day with scored news gets a dot, coloured by that day's net direction. Click a dot, or a "news day" button, to list that day's signals; each one opens its receipt.
+
+- **Prices** come from Deriv's public market-data WebSocket (`wss://api.derivws.com/trading/v1/options/ws/public`), which needs no key.
+  - Coverage (from `active_symbols`, 2026-09-28): 16 of the 40 assets, namely 6 FX pairs, gold, silver, 6 indices and BTC/ETH.
+  - The index prices are Deriv's OTC prices, which track the index, and the chart says so.
+  - Oil, gas, copper, the dollar index, SOL, XRP and single stocks have no Deriv feed. Central banks have no price. These pages show the mood only.
+- **Rate limit.** The public endpoint rejects back-to-back `ticks_history` requests; about 3 s apart works. So each 2-hourly run refreshes the 2 most out-of-date symbols (about 7 s, with time reserved out of the scoring budget), and all 16 are refreshed within 8 runs.
+- **History** was loaded once with `npm run prices -- --backfill`: 180 daily candles per symbol, 2,136 rows. Run `npm run prices` to do one normal refresh.
+- **What the chart claims:** it puts what the news said next to what the price did. It doesn't claim either one caused the other. Testing whether mood has any predictive value is a separate backtest.
+
 ## 6. Setup
 
 1. **Supabase project.** Enable the **pg_cron** and **pg_net** extensions under Database → Extensions.

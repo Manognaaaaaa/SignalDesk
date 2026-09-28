@@ -3,15 +3,19 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ServerEnv } from "@/lib/env";
 import { runIngestSteps } from "./ingest-job";
 import { runMoodStep } from "./mood-job";
+import { runPriceStep } from "./price-job";
 import { runScoreStep } from "./score-job";
 
 /**
- * The full background job: ingest (steps 1-4) -> score (5) -> mood (6). Each step writes its own
+ * The full background job: ingest (steps 1-4) -> score (5) -> mood (6) -> prices (7). Each step writes its own
  * job_runs row with stats. A failing step is recorded and the next step still runs, so e.g. a
  * Groq outage never stops ingestion or mood updates.
  */
 
-type Step = "ingest" | "score" | "mood";
+type Step = "ingest" | "score" | "mood" | "prices";
+
+/** Time kept back from scoring for the prices step (2 symbols x ~3.5 s, plus margin). */
+const PRICE_RESERVE_MS = 9_000;
 
 async function recordStep<T>(db: SupabaseClient, job: Step, fn: () => Promise<T>): Promise<{ status: "ok" | "failed"; stats: T | { error: string } }> {
   const started = new Date().toISOString();
@@ -31,9 +35,14 @@ async function recordStep<T>(db: SupabaseClient, job: Step, fn: () => Promise<T>
 
 export async function runPipeline(db: SupabaseClient, env: Pick<ServerEnv, "APP_BASE_URL" | "GROQ_API_KEY" | "MAX_STANCE_CALLS_PER_RUN">, opts: { timeBudgetMs?: number } = {}) {
   const started = Date.now();
+  const budget = opts.timeBudgetMs ?? 45_000;
   const ingest = await recordStep(db, "ingest", () => runIngestSteps(db, { appBaseUrl: env.APP_BASE_URL }));
-  const remaining = Math.max(5_000, (opts.timeBudgetMs ?? 45_000) - (Date.now() - started));
+  // Scoring would otherwise use all remaining time whenever there is a backlog, so the prices
+  // step's time is reserved up front (Deriv's rate limit makes it ~3.5 s per symbol).
+  const remaining = Math.max(5_000, budget - (Date.now() - started) - PRICE_RESERVE_MS);
   const score = await recordStep(db, "score", () => runScoreStep(db, { hasKey: Boolean(env.GROQ_API_KEY), maxCalls: env.MAX_STANCE_CALLS_PER_RUN, timeBudgetMs: remaining }));
   const mood = await recordStep(db, "mood", () => runMoodStep(db));
-  return { ingest, score, mood, duration_ms: Date.now() - started };
+  // Skipped only if an earlier step overran; those symbols are then simply picked first next run.
+  const prices = Date.now() - started < budget ? await recordStep(db, "prices", () => runPriceStep(db)) : { status: "ok" as const, stats: { skipped: "no_time" } };
+  return { ingest, score, mood, prices, duration_ms: Date.now() - started };
 }

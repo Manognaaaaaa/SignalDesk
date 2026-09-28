@@ -1,7 +1,7 @@
 import "server-only";
 import { MOOD_CONFIG } from "@/config/mood";
 import { supabaseServer } from "@/lib/supabase/server";
-import type { ActiveAsset, AssetRow, LastSignal, MoodPoint, Receipt, SignalWithEvidence, SiteStats, StoryGroup } from "@/lib/ui-types";
+import type { ActiveAsset, AssetRow, LastSignal, MoodPoint, PricePoint, Receipt, SignalWithEvidence, SiteStats, StoryGroup, TimelineSignal } from "@/lib/ui-types";
 
 /**
  * Read models for pages. Queries run through the per-request client (anon key + the user's
@@ -263,4 +263,34 @@ export async function getSiteStats(): Promise<SiteStats> {
     signals24h: signals.count ?? 0,
     lastUpdated: (latest.data?.[0]?.last_fetched_at as string | undefined) ?? null,
   };
+}
+
+/** Daily closes for an asset (oldest first), from daily_prices. */
+export async function getPriceSeries(assetId: string, days = 90): Promise<PricePoint[]> {
+  const db = await supabaseServer();
+  const since = new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);
+  const { data } = await db.from("daily_prices").select("day, close").eq("asset_id", assetId).gte("day", since).order("day");
+  return (data ?? []).map((r) => ({ day: r.day as string, close: Number(r.close) }));
+}
+
+/**
+ * Scored signals (not failed, not unclear) for an asset over `days`, light enough to draw one dot
+ * per news day on the chart; the Evidence drawer loads sentences when a signal is opened.
+ */
+export async function getSignalTimeline(assetId: string, days = 90): Promise<TimelineSignal[]> {
+  const db = await supabaseServer();
+  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+  const { data } = await db
+    .from("asset_signals")
+    .select("article_id, stance, strength, status, articles!inner(title, published_at, fetched_at, sources(name))")
+    .eq("asset_id", assetId)
+    .eq("status", "ok")
+    .gte("articles.fetched_at", since)
+    .order("created_at", { ascending: false })
+    .limit(500);
+  const rows = (data ?? []) as unknown as { article_id: string; stance: string; strength: number; articles: { title: string; published_at: string | null; fetched_at: string; sources: SourceJoin } }[];
+  return rows.map((r) => {
+    const at = r.articles.published_at ?? r.articles.fetched_at;
+    return { article_id: r.article_id, day: at.slice(0, 10), at, stance: r.stance, strength: r.strength, title: r.articles.title, source: sourceName(r.articles.sources) };
+  });
 }
