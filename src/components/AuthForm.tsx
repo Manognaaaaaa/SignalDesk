@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import { btnPrimary, field } from "./ui";
 
 const schema = z.object({ email: z.email().max(200), password: z.string().min(8, "Use at least 8 characters").max(200) });
 
@@ -42,32 +43,31 @@ export function AuthForm() {
     } else setMsg({ kind: "info", text: "Check your inbox and click the confirmation link, then sign in." });
   }
 
-  const field = "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900";
   return (
     <div className="mt-6">
-      <div className="grid grid-cols-2 rounded-lg bg-slate-100 p-1 text-sm dark:bg-slate-800" role="tablist">
+      <div className="grid grid-cols-2 rounded-lg border border-line bg-surface p-1 text-sm" role="tablist">
         {(["signin", "signup"] as const).map((m) => (
-          <button key={m} role="tab" aria-selected={mode === m} onClick={() => (setMode(m), setMsg(null))} className={`rounded-md py-1.5 ${mode === m ? "bg-white font-medium shadow-sm dark:bg-slate-900" : "text-slate-600 dark:text-slate-300"}`}>
+          <button key={m} role="tab" aria-selected={mode === m} onClick={() => (setMode(m), setMsg(null))} className={`rounded-md py-1.5 transition ${mode === m ? "bg-raised font-medium text-fg" : "text-muted hover:text-fg"}`}>
             {m === "signin" ? "Sign in" : "Create account"}
           </button>
         ))}
       </div>
       <form onSubmit={onSubmit} className="mt-4 space-y-3">
-        <label className="block text-sm">
+        <label className="block text-sm text-muted">
           Email
           <input name="email" type="email" autoComplete="email" required className={field} />
         </label>
-        <label className="block text-sm">
+        <label className="block text-sm text-muted">
           Password
           <input name="password" type="password" autoComplete={mode === "signin" ? "current-password" : "new-password"} required minLength={8} className={field} />
         </label>
         {msg && (
-          <p className={`text-sm ${msg.kind === "error" ? "text-rose-700 dark:text-rose-300" : "text-emerald-700 dark:text-emerald-300"}`} role="alert">
+          <p className={`text-sm ${msg.kind === "error" ? "text-down" : "text-accent"}`} role="alert">
             {msg.text}
           </p>
         )}
-        <button disabled={busy} className="w-full rounded-lg bg-slate-900 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-white dark:text-slate-900">
-          {busy ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
+        <button disabled={busy} className={`${btnPrimary} w-full`}>
+          {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
         </button>
       </form>
     </div>

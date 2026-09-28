@@ -3,47 +3,59 @@ import type { AssetRow, MoodPoint, StoryGroup } from "@/lib/ui-types";
 import { MoodGauge } from "./MoodGauge";
 import { Sparkline } from "./Sparkline";
 import { StoryList } from "./StoryList";
+import { label, panel } from "./ui";
 
-const CONF_STYLE: Record<string, string> = {
-  high: "bg-slate-900 text-white dark:bg-white dark:text-slate-900",
-  medium: "bg-slate-200 text-slate-800 dark:bg-slate-700 dark:text-slate-100",
-  low: "border border-dashed border-slate-400 text-slate-600 dark:text-slate-300",
+const CONF_STYLE: Record<string, { cls: string; bars: number }> = {
+  high: { cls: "text-fg", bars: 3 },
+  medium: { cls: "text-muted", bars: 2 },
+  low: { cls: "text-faint", bars: 1 },
 };
 
+/** Confidence as a 3-bar meter plus the word, so it reads at a glance and never by colour alone. */
+function Confidence({ level, title }: { level: string; title: string }) {
+  const c = CONF_STYLE[level] ?? CONF_STYLE.low!;
+  return (
+    <span className={`inline-flex shrink-0 items-center gap-1.5 text-[11px] font-medium ${c.cls}`} title={title}>
+      <span className="inline-flex items-end gap-px" aria-hidden="true">
+        {[1, 2, 3].map((i) => (
+          <span key={i} className={`w-[3px] rounded-[1px] ${i <= c.bars ? "bg-current" : "bg-line-strong"}`} style={{ height: 4 + i * 2 }} />
+        ))}
+      </span>
+      {level} confidence
+    </span>
+  );
+}
+
 /** One asset: today's mood gauge, confidence, 7-day sparkline and (optionally) its top stories. */
-export function MoodCard({ asset, series, stories, aiOffline }: { asset: AssetRow; series: MoodPoint[]; stories?: StoryGroup[]; aiOffline?: boolean }) {
+export function MoodCard({ asset, series, stories, aiOffline, empty }: { asset: AssetRow; series: MoodPoint[]; stories?: StoryGroup[]; aiOffline?: boolean; empty?: React.ReactNode }) {
   const today = series[series.length - 1];
   return (
-    <article className="flex flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      <header className="flex items-start justify-between gap-2">
-        <div>
-          <Link href={`/asset/${asset.slug}`} className="text-base font-semibold hover:underline">
+    <article className={`group flex flex-col p-5 transition hover:border-line-strong ${panel}`}>
+      <header className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <Link href={`/asset/${asset.slug}`} className="text-base font-semibold tracking-tight transition hover:text-accent">
             {asset.name}
           </Link>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{asset.description_simple}</p>
+          <p className="mt-0.5 line-clamp-2 text-xs leading-relaxed text-faint">{asset.description_simple}</p>
         </div>
-        {today?.confidence && (
-          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${CONF_STYLE[today.confidence]}`} title={`${today.source_count} sources, ${today.article_count} articles`}>
-            {today.confidence} confidence
-          </span>
-        )}
+        {today?.confidence && <Confidence level={today.confidence} title={`${today.source_count} sources, ${today.article_count} articles`} />}
       </header>
-      <div className="mt-3">
-        <MoodGauge score={today?.score ?? null} assetType={asset.asset_type} />
+      <div className="mt-5">
+        <MoodGauge score={today?.score ?? null} assetType={asset.asset_type} empty={empty} />
         {today && today.score !== null && (
-          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+          <p className="tabular mt-2 text-[11px] text-faint">
             {today.source_count} source{today.source_count === 1 ? "" : "s"} · {today.article_count} article{today.article_count === 1 ? "" : "s"} today
           </p>
         )}
-        {aiOffline && today?.score == null && <p className="mt-1 text-[11px] text-amber-700 dark:text-amber-300">AI scoring offline: mentions are shown without stances.</p>}
+        {aiOffline && today?.score == null && <p className="mt-2 text-[11px] text-warn">AI scoring offline: mentions are shown without stances.</p>}
       </div>
-      <div className="mt-3">
-        <p className="text-[11px] uppercase tracking-wide text-slate-400">7-day trend</p>
+      <div className="mt-5">
+        <p className={label}>7-day trend</p>
         <Sparkline points={series} label={asset.name} />
       </div>
       {stories && (
-        <div className="mt-2">
-          <p className="text-[11px] uppercase tracking-wide text-slate-400">Top stories</p>
+        <div className="mt-4 border-t border-line/70 pt-3">
+          <p className={label}>Top stories</p>
           <StoryList stories={stories.slice(0, 3)} assetSlug={asset.slug} compact />
         </div>
       )}

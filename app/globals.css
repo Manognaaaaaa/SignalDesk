@@ -1,8 +1,80 @@
 @import "tailwindcss";
 
-:root {
-  color-scheme: light dark;
+/*
+ * SignalDesk design tokens. Dark-only by design (a calm "terminal" read), one cool-grey family,
+ * one accent. Stance colours are semantic, never decorative:
+ *   up / down  = bullish / bearish (markets)
+ *   hawk / dove = hawkish / dovish (central banks) - deliberately NOT green/red, because a hawkish
+ *                 central bank is not "good" and a dovish one is not "bad".
+ *   mark       = the evidence highlighter.
+ */
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --color-bg: #0b0d10;
+  --color-surface: #111418;
+  --color-raised: #171b21;
+  --color-line: #232830;
+  --color-line-strong: #353c46;
+  --color-fg: #e7e9ec;
+  --color-muted: #a3abb5;
+  --color-faint: #6f7883;
+
+  --color-accent: #3fc48d;
+  --color-accent-strong: #5fd6a3;
+  --color-accent-ink: #04150d;
+
+  --color-up: #3fc48d;
+  --color-down: #ec6a78;
+  --color-hawk: #e6995a;
+  --color-dove: #72ade3;
+  --color-mark: #f0d27a;
+  --color-warn: #e8b25a;
 }
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-bg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  @apply bg-bg font-sans text-fg antialiased;
+  font-feature-settings: "ss01", "cv11";
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-accent) 35%, transparent);
+  color: var(--color-fg);
+}
+
+/* One visible focus style for every interactive element (keyboard users only). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Numbers in data views line up. */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }

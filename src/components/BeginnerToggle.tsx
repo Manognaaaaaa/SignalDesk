@@ -9,7 +9,7 @@ export function BeginnerToggle({ on }: { on: boolean }) {
   const [pending, start] = useTransition();
   const router = useRouter();
   return (
-    <label className="inline-flex cursor-pointer items-center gap-2 text-sm">
+    <label className="inline-flex cursor-pointer items-center gap-2.5 text-sm text-muted">
       <button
         role="switch"
         aria-checked={value}
@@ -23,9 +23,9 @@ export function BeginnerToggle({ on }: { on: boolean }) {
             else router.refresh();
           })
         }
-        className={`relative h-6 w-11 rounded-full transition ${value ? "bg-emerald-600" : "bg-slate-300 dark:bg-slate-700"} disabled:opacity-60`}
+        className={`relative h-6 w-11 rounded-full transition duration-200 ${value ? "bg-accent" : "bg-line-strong"} disabled:opacity-60`}
       >
-        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition ${value ? "left-5" : "left-0.5"}`} />
+        <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-fg shadow transition-transform duration-200 ${value ? "translate-x-5" : ""}`} />
       </button>
       Beginner mode
     </label>

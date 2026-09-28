@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { saveWatchlist } from "@/actions/user";
 import { ASSET_TYPE_LABEL } from "@/lib/format";
 import type { AssetRow } from "@/lib/ui-types";
+import { btnPrimary, label } from "./ui";
 
 /**
  * Pick assets from the catalogue, grouped by type with a one-line plain description each.
@@ -43,21 +44,21 @@ export function AssetPicker({ assets, initial, mode, min, max, next }: { assets:
     <div>
       {[...groups.entries()].map(([type, list]) => (
         <fieldset key={type} className="mt-6">
-          <legend className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{ASSET_TYPE_LABEL[type] ?? type}</legend>
+          <legend className={label}>{ASSET_TYPE_LABEL[type] ?? type}</legend>
           <div className="mt-2 grid gap-2 sm:grid-cols-2">
             {list.map((a) => {
               const on = picked.has(a.slug);
               return (
                 <label
                   key={a.slug}
-                  className={`flex cursor-pointer gap-3 rounded-xl border p-3 transition ${
-                    on ? "border-slate-900 bg-slate-50 dark:border-white dark:bg-slate-800" : "border-slate-200 hover:border-slate-400 dark:border-slate-700"
-                  }`}
+                  className={`flex cursor-pointer gap-3 rounded-lg border p-3 transition has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent ${
+                    on ? "border-accent/60 bg-accent/[0.06]" : "border-line bg-surface hover:border-line-strong"
+                  } ${!on && count >= max ? "opacity-50" : ""}`}
                 >
-                  <input type="checkbox" className="mt-1 h-4 w-4 accent-slate-900" checked={on} onChange={() => toggle(a.slug)} disabled={!on && count >= max} />
+                  <input type="checkbox" className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-accent)]" checked={on} onChange={() => toggle(a.slug)} disabled={!on && count >= max} />
                   <span>
                     <span className="block text-sm font-medium">{a.name}</span>
-                    <span className="block text-xs text-slate-500 dark:text-slate-400">{a.description_simple}</span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-faint">{a.description_simple}</span>
                   </span>
                 </label>
               );
@@ -65,19 +66,19 @@ export function AssetPicker({ assets, initial, mode, min, max, next }: { assets:
           </div>
         </fieldset>
       ))}
-      <div className="sticky bottom-0 mt-6 flex flex-wrap items-center gap-3 border-t border-slate-200 bg-slate-50/95 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+      <div className="sticky bottom-0 mt-8 flex flex-wrap items-center gap-3 border-t border-line bg-bg/90 py-4 backdrop-blur-md">
         <button
           onClick={submit}
           disabled={pending || count < min}
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-40 dark:bg-white dark:text-slate-900"
+          className={btnPrimary}
         >
           {pending ? "Saving..." : mode === "onboarding" ? "Build my Today page" : "Save watchlist"}
         </button>
-        <span className="text-sm text-slate-600 dark:text-slate-300">
+        <span className="tabular text-sm text-muted">
           {count} selected · pick {min === max ? min : `${min} to ${max}`}
         </span>
-        {error && <span className="text-sm text-rose-700 dark:text-rose-300" role="alert">{error}</span>}
-        {saved && !error && <span className="text-sm text-emerald-700 dark:text-emerald-300">Saved</span>}
+        {error && <span className="text-sm text-down" role="alert">{error}</span>}
+        {saved && !error && <span className="text-sm text-accent">Saved</span>}
       </div>
     </div>
   );

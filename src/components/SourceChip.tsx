@@ -6,10 +6,10 @@ export function SourceChip({ label, onOpen }: { label: string; onOpen: () => voi
     <button
       type="button"
       onClick={onOpen}
-      className="inline-flex max-w-[14rem] items-center gap-1 truncate rounded-full border border-slate-300 bg-white px-2 py-0.5 text-[11px] text-slate-700 hover:border-slate-500 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+      className="inline-flex max-w-[15rem] items-center gap-1.5 truncate rounded-md border border-line-strong bg-raised px-2 py-1 text-[11px] text-muted transition hover:border-mark/60 hover:text-fg active:translate-y-px"
       title="Show the evidence"
     >
-      <span aria-hidden="true">↗</span>
+      <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-mark/80" />
       <span className="truncate">{label}</span>
     </button>
   );

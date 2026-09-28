@@ -1,26 +1,36 @@
 /**
  * Stance label with a consistent colour AND a text label + symbol (never colour alone).
- * Up-stances (bullish/hawkish) are green-ish, down-stances (bearish/dovish) red-ish, neutral grey,
- * unclear a dashed outline.
+ * Markets: bullish = up (green), bearish = down (red). Central banks: hawkish / dovish get their
+ * own warm / cool hues, so tighter policy never reads as "good" or looser as "bad".
+ * Neutral is grey; unclear is a dashed outline.
  */
 const STYLE: Record<string, { cls: string; sym: string }> = {
-  bullish: { cls: "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200", sym: "▲" },
-  hawkish: { cls: "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200", sym: "▲" },
-  bearish: { cls: "border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950/60 dark:text-rose-200", sym: "▼" },
-  dovish: { cls: "border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950/60 dark:text-rose-200", sym: "▼" },
-  neutral: { cls: "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200", sym: "●" },
-  unclear: { cls: "border-dashed border-slate-400 bg-transparent text-slate-600 dark:border-slate-500 dark:text-slate-300", sym: "?" },
+  bullish: { cls: "border-up/30 bg-up/10 text-up", sym: "▲" },
+  bearish: { cls: "border-down/30 bg-down/10 text-down", sym: "▼" },
+  hawkish: { cls: "border-hawk/30 bg-hawk/10 text-hawk", sym: "▲" },
+  dovish: { cls: "border-dove/30 bg-dove/10 text-dove", sym: "▼" },
+  neutral: { cls: "border-line-strong bg-raised text-muted", sym: "●" },
+  unclear: { cls: "border-dashed border-line-strong text-faint", sym: "?" },
 };
 
 export function StanceBadge({ stance, strength, failed }: { stance: string | null; strength?: number | null; failed?: boolean }) {
   const key = failed || !stance ? "unclear" : stance;
   const s = STYLE[key] ?? STYLE.unclear!;
   const label = failed ? "not scored" : (stance ?? "not scored");
+  const showStrength = strength != null && strength > 0 && !failed && stance !== "unclear";
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${s.cls}`}>
-      <span aria-hidden="true">{s.sym}</span>
+    <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-medium leading-none ${s.cls}`}>
+      <span aria-hidden="true" className="text-[9px]">
+        {s.sym}
+      </span>
       {label}
-      {strength != null && strength > 0 && !failed && stance !== "unclear" && <span className="opacity-70">· {strength}/3</span>}
+      {showStrength && (
+        <span className="ml-0.5 inline-flex gap-px" title={`strength ${strength} of 3`} aria-label={`strength ${strength} of 3`}>
+          {[1, 2, 3].map((i) => (
+            <span key={i} className={`h-2 w-[3px] rounded-[1px] ${i <= strength! ? "bg-current" : "bg-current opacity-25"}`} />
+          ))}
+        </span>
+      )}
     </span>
   );
 }

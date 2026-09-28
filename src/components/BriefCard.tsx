@@ -4,6 +4,7 @@ import { timeAgo } from "@/lib/format";
 import { Disclaimer } from "./Disclaimer";
 import { EvidenceDrawer } from "./EvidenceDrawer";
 import { SourceChip } from "./SourceChip";
+import { panel } from "./ui";
 
 export type BriefPayload = {
   source: "ai" | "template";
@@ -42,32 +43,32 @@ export function BriefCard({ level, initial, aiOnline }: { level: "standard" | "b
   const byId = new Map((brief?.articles ?? []).map((a) => [a.id, a]));
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900" aria-live="polite">
+    <section className={`p-6 ${panel}`} aria-live="polite">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold">Your brief{level === "beginner" ? " · plain language" : ""}</h2>
+        <h2 className="text-lg font-semibold tracking-tight">Your brief{level === "beginner" ? <span className="font-normal text-muted"> · plain language</span> : ""}</h2>
         {brief && (
-          <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+          <span className="rounded-md border border-line px-2 py-1 text-[11px] text-faint">
             {brief.source === "ai" ? "AI-written, every line cited" : aiOnline ? "Summary from mood data" : "AI offline · summary from mood data"}
           </span>
         )}
       </div>
-      {error && <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{error}</p>}
+      {error && <p className="mt-3 text-sm text-muted">{error}</p>}
       {!error && !brief && (
         <div className="mt-4 space-y-3" aria-busy="true">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-4 animate-pulse rounded bg-slate-200 dark:bg-slate-800" style={{ width: `${90 - i * 12}%` }} />
+            <div key={i} className="h-4 animate-pulse rounded bg-raised" style={{ width: `${90 - i * 12}%` }} />
           ))}
         </div>
       )}
       {brief && (
-        <ul className="mt-3 space-y-3">
+        <ul className="mt-4 space-y-4">
           {brief.bullets.map((b, i) => (
             <li key={i} className="flex gap-3">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" aria-hidden="true" />
+              <span className="tabular mt-[3px] w-5 shrink-0 font-mono text-xs text-faint" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
               <div>
-                <p className="text-[15px] leading-relaxed">{b.text}</p>
+                <p className="max-w-[68ch] text-[15px] leading-relaxed text-fg">{b.text}</p>
                 {b.article_ids.length > 0 && (
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                  <div className="mt-2 flex flex-wrap gap-1.5">
                     {b.article_ids.map((id) => {
                       const a = byId.get(id);
                       return <SourceChip key={id} label={a ? `${a.source} · ${timeAgo(a.published_at)}` : "Source"} onOpen={() => setOpen({ id, slugs: b.asset_slugs })} />;
@@ -79,7 +80,7 @@ export function BriefCard({ level, initial, aiOnline }: { level: "standard" | "b
           ))}
         </ul>
       )}
-      <Disclaimer className="mt-4" />
+      <Disclaimer className="mt-5 border-t border-line/70 pt-4" />
       <EvidenceDrawer articleId={open?.id ?? null} assetSlugs={open?.slugs} onClose={close} />
     </section>
   );
