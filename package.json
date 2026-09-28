@@ -16,6 +16,7 @@
     "test": "vitest run",
     "seed": "tsx --conditions=react-server --env-file=.env.local scripts/seed.ts",
     "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/run-ingest.ts",
+    "rematch": "tsx --conditions=react-server --env-file=.env.local scripts/rematch.ts",
     "probe-feeds": "tsx --conditions=react-server scripts/probe-feeds.ts",
     "prices": "tsx --conditions=react-server --env-file=.env.local scripts/prices.ts",
     "eval": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval-stance.ts",

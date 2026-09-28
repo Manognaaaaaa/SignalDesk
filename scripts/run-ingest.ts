@@ -14,9 +14,9 @@ async function main() {
   const env = serverEnv();
   const effective = args["no-score"] ? { ...env, GROQ_API_KEY: undefined } : env;
   const res = await runPipeline(supabaseAdmin(), effective, { timeBudgetMs: 10 * 60_000 });
-  for (const step of ["ingest", "score", "mood"] as const) console.log(`${step}: ${res[step].status}`, JSON.stringify(res[step].stats));
+  for (const step of ["ingest", "score", "mood", "prices"] as const) console.log(`${step}: ${res[step].status}`, JSON.stringify(res[step].stats));
   console.log(`done in ${(res.duration_ms / 1000).toFixed(1)} s`);
-  if ([res.ingest, res.score, res.mood].some((s) => s.status === "failed")) process.exitCode = 1;
+  if ([res.ingest, res.score, res.mood, res.prices].some((s) => s.status === "failed")) process.exitCode = 1;
 }
 
 main().catch((e) => {

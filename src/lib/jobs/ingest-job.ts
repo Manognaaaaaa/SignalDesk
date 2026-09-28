@@ -10,8 +10,8 @@ import { assignStories, STORY_WINDOW_MS } from "@/lib/ingest/stories";
 /**
  * Ingest steps 1-4 (all deterministic, no LLM, works without GROQ_API_KEY):
  *  1. fetch active feeds (concurrency 8, so ~24 feeds with 10 s timeouts fit the 60 s function limit; conditional requests, failures counted per source),
- *  2. normalise and store NEW articles (deduped by canonical-URL hash),
- *  3. group new articles into stories (title shingles, 48 h window),
+ *  2. normalise NEW articles (deduped by canonical-URL hash),
+ *  3. group them into stories (title shingles, 48 h window) and store them with their story,
  *  4. detect assets per new article and store the relevant sentences.
  * Idempotent: re-running inserts nothing new for already-seen URLs.
  */
@@ -34,6 +34,7 @@ export type IngestStats = {
 };
 
 type SourceRow = FeedSource & { name: string; consecutive_failures: number };
+export type StoredArticle = { id: string; title: string; excerpt: string; story_id?: string | null };
 type Candidate = { source_id: string; article: NormalisedArticle };
 
 const chunk = <T,>(xs: T[], n: number) => Array.from({ length: Math.ceil(xs.length / n) }, (_, i) => xs.slice(i * n, i * n + n));
@@ -87,65 +88,80 @@ export async function runIngestSteps(db: SupabaseClient, opts: { appBaseUrl: str
     for (const r of data ?? []) existing.add(r.url_hash as string);
   }
   const fresh = [...unique.values()].filter((c) => !existing.has(c.article.url_hash));
-  type Inserted = { id: string; source_id: string; title: string; excerpt: string; published_at: string | null; fetched_at: string };
-  const inserted: Inserted[] = [];
-  for (const part of chunk(fresh, 200)) {
-    const { data, error } = await db
-      .from("articles")
-      .upsert(part.map((c) => ({ ...c.article, source_id: c.source_id, fetched_at: now.toISOString() })), { onConflict: "url_hash", ignoreDuplicates: true })
-      .select("id, source_id, title, excerpt, published_at, fetched_at");
-    if (error) {
-      console.error(`[ingest] article insert failed: ${error.code ?? "unknown"}`);
-      continue;
-    }
-    inserted.push(...((data ?? []) as Inserted[]));
-  }
-  stats.articles_new = inserted.length;
-  if (inserted.length === 0) return stats;
+  if (fresh.length === 0) return stats;
 
-  // ---- 3. stories ----
+  // ---- 3. stories, assigned BEFORE insert ----
+  // Articles get their id here, so each one is inserted with its story_id already set: a few
+  // batched round trips instead of one UPDATE per story (which, from a function far from the
+  // database, took minutes on the first run with 24 feeds and hit the 60 s limit).
   const at = (a: { published_at: string | null; fetched_at: string }) => Date.parse(a.published_at ?? a.fetched_at);
+  const nowIso = now.toISOString();
+  const planned = fresh.map((c) => ({ id: randomUUID() as string, c }));
   const since = new Date(now.getTime() - STORY_WINDOW_MS - 24 * 3_600_000).toISOString();
   const { data: recent } = await db.from("articles").select("story_id, title, published_at, fetched_at").not("story_id", "is", null).gte("fetched_at", since).limit(3000);
   const assignments = assignStories(
-    inserted.map((a) => ({ article_id: a.id, title: a.title, at: at(a) })),
+    planned.map((p) => ({ article_id: p.id, title: p.c.article.title, at: at({ published_at: p.c.article.published_at, fetched_at: nowIso }) })),
     (recent ?? []).map((r) => ({ story_id: r.story_id as string, title: r.title as string, at: at(r as { published_at: string | null; fetched_at: string }) })),
     randomUUID,
   );
-  const byId = new Map(inserted.map((a) => [a.id, a]));
-  const newStories = assignments.filter((a) => a.is_new_story);
-  stats.stories_new = newStories.length;
-  stats.stories_joined = assignments.length - newStories.length;
+  const storyOf = new Map(assignments.map((x) => [x.article_id, x.story_id]));
+  const plannedById = new Map(planned.map((p) => [p.id, p]));
+  const newStories = assignments.filter((x) => x.is_new_story);
   if (newStories.length) {
-    const rows = newStories.map((s) => {
-      const a = byId.get(s.article_id)!;
-      const t = new Date(at(a)).toISOString();
-      return { id: s.story_id, headline: a.title, first_seen_at: t, last_seen_at: t, article_count: 1, source_count: 1 };
+    const rows = newStories.map((x) => {
+      const p = plannedById.get(x.article_id)!;
+      const t = new Date(at({ published_at: p.c.article.published_at, fetched_at: nowIso })).toISOString();
+      return { id: x.story_id, headline: p.c.article.title, first_seen_at: t, last_seen_at: t, article_count: 1, source_count: 1 };
     });
     for (const part of chunk(rows, 200)) {
       const { error } = await db.from("stories").insert(part);
       if (error) console.error(`[ingest] story insert failed: ${error.code ?? "unknown"}`);
     }
   }
-  const byStory = new Map<string, string[]>();
-  for (const a of assignments) (byStory.get(a.story_id) ?? byStory.set(a.story_id, []).get(a.story_id)!).push(a.article_id);
-  for (const [storyId, ids] of byStory) {
-    const { error } = await db.from("articles").update({ story_id: storyId }).in("id", ids);
-    if (error) console.error(`[ingest] story assignment failed: ${error.code ?? "unknown"}`);
+
+  // ---- 2. store new articles with their story ----
+  const inserted: StoredArticle[] = [];
+  for (const part of chunk(planned, 200)) {
+    const { data, error } = await db
+      .from("articles")
+      .upsert(
+        part.map((p) => ({ id: p.id, ...p.c.article, source_id: p.c.source_id, fetched_at: nowIso, story_id: storyOf.get(p.id) ?? null })),
+        { onConflict: "url_hash", ignoreDuplicates: true },
+      )
+      .select("id, title, excerpt, story_id");
+    if (error) {
+      console.error(`[ingest] article insert failed: ${error.code ?? "unknown"}`);
+      continue;
+    }
+    inserted.push(...((data ?? []) as StoredArticle[]));
   }
-  await db.rpc("refresh_stories", { p_ids: [...byStory.keys()] });
+  stats.articles_new = inserted.length;
+  const insertedStories = new Set(inserted.map((a) => a.story_id).filter((x): x is string => Boolean(x)));
+  stats.stories_new = newStories.filter((x) => insertedStories.has(x.story_id)).length;
+  stats.stories_joined = inserted.length - stats.stories_new;
+  if (insertedStories.size) await db.rpc("refresh_stories", { p_ids: [...insertedStories] });
 
   // ---- 4. asset mentions ----
+  stats.mentions_new = await matchAndStoreMentions(db, inserted);
+  return stats;
+}
+
+/**
+ * Detects assets in stored articles and saves the relevant sentences. Idempotent (existing
+ * (article, asset) pairs are kept), so it also serves `npm run rematch`: re-matching recent
+ * articles after aliases or assets are added, or after a run died before this step.
+ */
+export async function matchAndStoreMentions(db: SupabaseClient, articles: StoredArticle[]): Promise<number> {
+  if (articles.length === 0) return 0;
   const { data: assets, error: aErr } = await db.from("assets").select("id, asset_aliases(alias, is_case_sensitive)");
   if (aErr) throw new Error(`assets read failed: ${aErr.code ?? "unknown"}`);
   const matcher = compileMatcher(((assets ?? []) as { id: string; asset_aliases: AssetWithAliases["aliases"] }[]).map((a) => ({ id: a.id, aliases: a.asset_aliases ?? [] })));
-  const mentionRows = inserted.flatMap((a) =>
-    matchAssets(buildSentences(a.title, a.excerpt), matcher).map((m) => ({ article_id: a.id, asset_id: m.asset_id, sentences: m.sentences })),
-  );
+  const mentionRows = articles.flatMap((a) => matchAssets(buildSentences(a.title, a.excerpt), matcher).map((m) => ({ article_id: a.id, asset_id: m.asset_id, sentences: m.sentences })));
+  let saved = 0;
   for (const part of chunk(mentionRows, 300)) {
     const { data, error } = await db.from("asset_mentions").upsert(part, { onConflict: "article_id,asset_id", ignoreDuplicates: true }).select("article_id");
     if (error) console.error(`[ingest] mention insert failed: ${error.code ?? "unknown"}`);
-    else stats.mentions_new += data?.length ?? 0;
+    else saved += data?.length ?? 0;
   }
-  return stats;
+  return saved;
 }
