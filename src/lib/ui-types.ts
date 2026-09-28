@@ -20,3 +20,7 @@ export type SignalWithEvidence = {
   evidence_ids: string[];
   sentences: SentenceRow[];
 };
+export type Receipt = SignalWithEvidence & { asset: { slug: string; name: string; asset_type: AssetType } };
+export type LastSignal = { stance: string; at: string };
+export type ActiveAsset = { asset: AssetRow; signals: number; last: LastSignal | null };
+export type SiteStats = { sources: number; articles24h: number; assets: number; signals24h: number; lastUpdated: string | null };

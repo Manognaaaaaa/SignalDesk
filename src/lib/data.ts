@@ -1,7 +1,7 @@
 import "server-only";
 import { MOOD_CONFIG } from "@/config/mood";
 import { supabaseServer } from "@/lib/supabase/server";
-import type { AssetRow, MoodPoint, SignalWithEvidence, StoryGroup } from "@/lib/ui-types";
+import type { ActiveAsset, AssetRow, LastSignal, MoodPoint, Receipt, SignalWithEvidence, SiteStats, StoryGroup } from "@/lib/ui-types";
 
 /**
  * Read models for pages. Queries run through the per-request client (anon key + the user's
@@ -166,4 +166,101 @@ export async function hasAnySignals(): Promise<boolean> {
   const db = await supabaseServer();
   const { count } = await db.from("asset_signals").select("article_id", { count: "exact", head: true });
   return (count ?? 0) > 0;
+}
+
+type SignalJoinRow = {
+  article_id: string;
+  asset_id: string;
+  stance: string;
+  strength: number;
+  status: string;
+  why: string;
+  evidence_ids: string[];
+  assets: { slug: string; name: string; asset_type: AssetRow["asset_type"] } | { slug: string; name: string; asset_type: AssetRow["asset_type"] }[] | null;
+  articles: { title: string; url: string; published_at: string | null; fetched_at: string; sources: SourceJoin } | null;
+};
+
+/**
+ * The newest directional signal (not unclear/neutral) from the last 48 h, with its stored
+ * sentences: the landing page shows it as a real example of a "receipt".
+ */
+export async function getLatestReceipt(): Promise<Receipt | null> {
+  const db = await supabaseServer();
+  const since = new Date(Date.now() - 48 * 3_600_000).toISOString();
+  const { data } = await db
+    .from("asset_signals")
+    .select("article_id, asset_id, stance, strength, status, why, evidence_ids, assets(slug, name, asset_type), articles!inner(title, url, published_at, fetched_at, sources(name))")
+    .eq("status", "ok")
+    .in("stance", ["bullish", "bearish", "hawkish", "dovish"])
+    .gte("strength", 2)
+    .gte("articles.fetched_at", since)
+    .order("created_at", { ascending: false })
+    .limit(1);
+  const r = (data?.[0] ?? null) as unknown as SignalJoinRow | null;
+  const asset = r ? one(r.assets) : null;
+  if (!r || !r.articles || !asset) return null;
+  const { data: m } = await db.from("asset_mentions").select("sentences").eq("article_id", r.article_id).eq("asset_id", r.asset_id).maybeSingle();
+  return {
+    article_id: r.article_id,
+    title: r.articles.title,
+    url: r.articles.url,
+    source: sourceName(r.articles.sources),
+    at: r.articles.published_at ?? r.articles.fetched_at,
+    stance: r.stance,
+    strength: r.strength,
+    status: r.status,
+    why: r.why,
+    evidence_ids: r.evidence_ids,
+    sentences: (m?.sentences as { id: string; text: string }[] | undefined) ?? [],
+    asset,
+  };
+}
+
+/**
+ * Assets ranked by how many scored signals they had in the last `hours`, each with its latest
+ * scored stance (any age within 7 days) so quiet days can say "last signal 2 d ago · bearish".
+ */
+export async function getActiveAssets(catalogue: AssetRow[], hours = 48): Promise<ActiveAsset[]> {
+  const db = await supabaseServer();
+  const week = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const cutoff = Date.now() - hours * 3_600_000;
+  const { data } = await db
+    .from("asset_signals")
+    .select("asset_id, stance, status, articles!inner(published_at, fetched_at)")
+    .neq("status", "failed")
+    .gte("articles.fetched_at", week)
+    .order("created_at", { ascending: false })
+    .limit(1000);
+  const rows = (data ?? []) as unknown as { asset_id: string; stance: string; status: string; articles: { published_at: string | null; fetched_at: string } }[];
+  const byAsset = new Map<string, { signals: number; last: LastSignal | null }>();
+  for (const r of rows) {
+    const at = r.articles.published_at ?? r.articles.fetched_at;
+    const e = byAsset.get(r.asset_id) ?? { signals: 0, last: null };
+    if (Date.parse(r.articles.fetched_at) >= cutoff) e.signals++;
+    if (r.stance !== "unclear" && (!e.last || at > e.last.at)) e.last = { stance: r.stance, at };
+    byAsset.set(r.asset_id, e);
+  }
+  return catalogue
+    .map((asset) => ({ asset, signals: byAsset.get(asset.id)?.signals ?? 0, last: byAsset.get(asset.id)?.last ?? null }))
+    .sort((a, b) => b.signals - a.signals || (b.last?.at ?? "").localeCompare(a.last?.at ?? ""));
+}
+
+/** Live counts for the landing page (all computed from stored rows, never hardcoded). */
+export async function getSiteStats(): Promise<SiteStats> {
+  const db = await supabaseServer();
+  const day = new Date(Date.now() - 86_400_000).toISOString();
+  const [sources, articles, assets, signals, latest] = await Promise.all([
+    db.from("sources").select("id", { count: "exact", head: true }).eq("is_active", true),
+    db.from("articles").select("id", { count: "exact", head: true }).gte("fetched_at", day),
+    db.from("assets").select("id", { count: "exact", head: true }),
+    db.from("asset_signals").select("article_id", { count: "exact", head: true }).gte("created_at", day),
+    db.from("sources").select("last_fetched_at").not("last_fetched_at", "is", null).order("last_fetched_at", { ascending: false }).limit(1),
+  ]);
+  return {
+    sources: sources.count ?? 0,
+    articles24h: articles.count ?? 0,
+    assets: assets.count ?? 0,
+    signals24h: signals.count ?? 0,
+    lastUpdated: (latest.data?.[0]?.last_fetched_at as string | undefined) ?? null,
+  };
 }

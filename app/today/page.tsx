@@ -3,13 +3,15 @@ import { redirect } from "next/navigation";
 import { BeginnerToggle } from "@/components/BeginnerToggle";
 import { BriefCard, type BriefPayload } from "@/components/BriefCard";
 import { MoodCard } from "@/components/MoodCard";
+import { textLink } from "@/components/ui";
 import { watchlistHash } from "@/lib/ai/brief";
 import { getSessionUser } from "@/lib/auth";
-import { getBeginnerMode, getMoodSeries, getStoriesForAsset, getWatchlist, hasAnySignals } from "@/lib/data";
+import { getActiveAssets, getBeginnerMode, getMoodSeries, getStoriesForAsset, getWatchlist, hasAnySignals } from "@/lib/data";
+import { LastSignalNote } from "@/components/LastSignalNote";
 import { serverEnv } from "@/lib/env";
 import { supabaseServer } from "@/lib/supabase/server";
 
-export const metadata = { title: "Today - SignalDesk" };
+export const metadata = { title: "Today" };
 export const dynamic = "force-dynamic";
 
 /** Loads today's cached brief for this user/level/watchlist, with its cited articles (RLS: own briefs only). */
@@ -37,12 +39,14 @@ export default async function TodayPage() {
   const beginner = await getBeginnerMode();
   const level = beginner ? "beginner" : "standard";
   const ids = watchlist.map((a) => a.id);
-  const [series, stories, initial, anySignals] = await Promise.all([
+  const [series, stories, initial, anySignals, activity] = await Promise.all([
     getMoodSeries(ids),
     Promise.all(watchlist.map((a) => getStoriesForAsset(a.id, 48, 3))),
     cachedBrief(level, ids),
     hasAnySignals(),
+    getActiveAssets(watchlist),
   ]);
+  const lastById = new Map(activity.map((x) => [x.asset.id, x.last]));
   const aiOnline = Boolean(serverEnv().GROQ_API_KEY);
   const noNews = stories.every((s) => s.length === 0);
 
@@ -50,8 +54,8 @@ export default async function TodayPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Today</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" })} (UTC)</p>
+          <h1 className="text-3xl font-semibold tracking-[-0.02em]">Today</h1>
+          <p className="tabular mt-1 text-sm text-faint">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" })} (UTC)</p>
         </div>
         <BeginnerToggle on={beginner} />
       </div>
@@ -59,18 +63,18 @@ export default async function TodayPage() {
       <BriefCard key={level} level={level} initial={initial} aiOnline={aiOnline} />
 
       {noNews && (
-        <p className="rounded-2xl border border-dashed border-slate-300 p-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+        <p className="rounded-xl border border-dashed border-line-strong p-4 text-sm text-muted">
           No news for your assets yet today. New headlines arrive every two hours.
         </p>
       )}
 
       <div className="grid gap-4 md:grid-cols-2">
         {watchlist.map((a, i) => (
-          <MoodCard key={a.id} asset={a} series={series.get(a.id) ?? []} stories={stories[i]} aiOffline={!aiOnline && !anySignals} />
+          <MoodCard key={a.id} asset={a} series={series.get(a.id) ?? []} stories={stories[i]} aiOffline={!aiOnline && !anySignals} empty={<LastSignalNote last={lastById.get(a.id) ?? null} />} />
         ))}
       </div>
       <p className="text-center text-sm">
-        <Link href="/watchlist" className="text-slate-600 underline dark:text-slate-300">
+        <Link href="/watchlist" className={textLink}>
           Edit watchlist
         </Link>
       </p>
