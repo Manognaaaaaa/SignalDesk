@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { saveWatchlist } from "@/actions/user";
 import { ASSET_TYPE_LABEL } from "@/lib/format";
 import type { AssetRow } from "@/lib/ui-types";
-import { btnPrimary, label } from "./ui";
+import { btnPrimary, field, label } from "./ui";
 
 /**
  * Pick assets from the catalogue, grouped by type with a one-line plain description each.
@@ -15,9 +15,12 @@ export function AssetPicker({ assets, initial, mode, min, max, next }: { assets:
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, start] = useTransition();
+  const [query, setQuery] = useState("");
   const router = useRouter();
+  const q = query.trim().toLowerCase();
+  const matches = (a: AssetRow) => !q || `${a.name} ${a.slug} ${a.description_simple} ${ASSET_TYPE_LABEL[a.asset_type] ?? ""}`.toLowerCase().includes(q);
   const groups = new Map<string, AssetRow[]>();
-  for (const a of assets) (groups.get(a.asset_type) ?? groups.set(a.asset_type, []).get(a.asset_type)!).push(a);
+  for (const a of assets.filter(matches)) (groups.get(a.asset_type) ?? groups.set(a.asset_type, []).get(a.asset_type)!).push(a);
 
   const toggle = (slug: string) => {
     setSaved(false);
@@ -42,6 +45,13 @@ export function AssetPicker({ assets, initial, mode, min, max, next }: { assets:
   const count = picked.size;
   return (
     <div>
+      <div className="mt-6">
+        <label className="block text-sm text-muted">
+          Search {assets.length} assets
+          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="e.g. yen, oil, Nvidia, central bank" className={field} />
+        </label>
+      </div>
+      {groups.size === 0 && <p className="mt-6 text-sm text-muted">No assets match &ldquo;{query}&rdquo;.</p>}
       {[...groups.entries()].map(([type, list]) => (
         <fieldset key={type} className="mt-6">
           <legend className={label}>{ASSET_TYPE_LABEL[type] ?? type}</legend>

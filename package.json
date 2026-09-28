@@ -16,6 +16,7 @@
     "test": "vitest run",
     "seed": "tsx --conditions=react-server --env-file=.env.local scripts/seed.ts",
     "ingest": "tsx --conditions=react-server --env-file=.env.local scripts/run-ingest.ts",
+    "probe-feeds": "tsx --conditions=react-server scripts/probe-feeds.ts",
     "eval": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval-stance.ts",
     "eval:sample": "tsx --conditions=react-server --env-file=.env.local scripts/eval/sample-judge-set.ts",
     "eval:judge": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/eval/run-judge-eval.ts",

@@ -2,7 +2,7 @@
 
 **Your watchlist's market news, explained with receipts.**
 
-Pick the assets you follow (EUR/USD, gold, oil, the S&P 500, NVIDIA, Bitcoin, the Fed, the ECB...). SignalDesk reads central-bank and market headlines every two hours and works out which assets each article is about. It then judges the stance for each asset (Gold: bullish; Fed: hawkish) and gives you a 60-second Today page:
+Pick the assets you follow from 40: currency pairs and the dollar index, gold, oil, gas and copper, US, UK, German and Japanese indices, big-tech and chip stocks, crypto, and 7 central banks. SignalDesk reads central-bank and market headlines every two hours and works out which assets each article is about. It then judges the stance for each asset (Gold: bullish; Fed: hawkish) and gives you a 60-second Today page:
 
 - a short brief where every line is cited,
 - a daily **Mood** per asset with an honest confidence level,
@@ -171,6 +171,18 @@ Per stance: bullish 6/6, bearish 8/8, hawkish 4/4, dovish 3/3, neutral 4/4, uncl
 | CoinDesk | markets |
 | OilPrice.com | markets |
 | BBC Business | news |
+| Federal Reserve speeches · Bank of Japan · Reserve Bank of Australia | central_bank |
+| MarketWatch Bulletins · CNBC Technology · Seeking Alpha Market Currents | markets |
+| Yahoo Finance: big-tech tickers · Yahoo Finance: FX and commodities | markets |
+| Investing.com News · Forex · Commodities | markets |
+| Cointelegraph · Decrypt | markets |
+| Guardian Economics | news |
+
+The last 14 were added on 2026-09-28 after `npm run probe-feeds`, which runs each candidate through the production fetch path. 20 of 28 candidates passed. Relevant ones were chosen over broad ones, because a broad feed adds articles that match no asset.
+- **Rejected:** WSJ Markets and World News, MarketWatch Real-time, Bank of Canada and FXEmpire (no items in 7 days), Mining.com (403), Nasdaq (timeout), Fortune (404).
+- **Skipped although they passed:** CNBC Markets (the same URL as CNBC Economy), and NYT and Guardian Business (too broad).
+- **Coverage:** on 553 stored and fresh texts, the share matching at least one asset rose from 28% to 39% with the 40-asset catalogue.
+- **Known false matches**, left for the detection eval: "AMD" in eye-disease news, "SNB" in a US bank's name, "copper wires", and JPMorgan quoted as an analyst.
 
 In production, **FXStreet answers HTTP 403 to requests from Vercel's datacenter IPs** (it works from a home connection). The job counts the failure and keeps going; after 5 consecutive failures the source is deactivated automatically and logged. Rejected at verification: *MarketWatch MarketPulse* (last item over a year old) and *Fed monetary-policy-only feed* (nothing in the last 7 days; covered by the all-releases feed). A live dry run fetched all 10 feeds: 159 recent articles, 60 with at least one asset mention.
 

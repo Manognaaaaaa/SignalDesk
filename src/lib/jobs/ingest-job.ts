@@ -9,7 +9,7 @@ import { assignStories, STORY_WINDOW_MS } from "@/lib/ingest/stories";
 
 /**
  * Ingest steps 1-4 (all deterministic, no LLM, works without GROQ_API_KEY):
- *  1. fetch active feeds (concurrency 4, conditional requests, failures counted per source),
+ *  1. fetch active feeds (concurrency 8, so ~24 feeds with 10 s timeouts fit the 60 s function limit; conditional requests, failures counted per source),
  *  2. normalise and store NEW articles (deduped by canonical-URL hash),
  *  3. group new articles into stories (title shingles, 48 h window),
  *  4. detect assets per new article and store the relevant sentences.
@@ -17,6 +17,7 @@ import { assignStories, STORY_WINDOW_MS } from "@/lib/ingest/stories";
  */
 
 export const MAX_CONSECUTIVE_FAILURES = 5;
+export const FETCH_CONCURRENCY = 8;
 
 export type IngestStats = {
   sources: number;
@@ -48,7 +49,7 @@ export async function runIngestSteps(db: SupabaseClient, opts: { appBaseUrl: str
   stats.sources = sources.length;
 
   const candidates: Candidate[] = [];
-  await mapWithConcurrency(sources, 4, async (src) => {
+  await mapWithConcurrency(sources, FETCH_CONCURRENCY, async (src) => {
     const res = await fetchFeed(src, opts.appBaseUrl, opts.fetchDeps ?? defaultDeps);
     const base = { last_fetched_at: now.toISOString() };
     if (res.status === "error") {
